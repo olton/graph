@@ -1,3 +1,3 @@
 # Graph
 
-GraphJS - simple library to build any type of charts. 
+GraphJS - a simple library to build different types of charts. 
