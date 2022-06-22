@@ -1,12 +1,14 @@
 import {line} from "../primitives/line.js";
 
-export const ORIGIN_TOP_LEFT = "top-left"
+export const ORIGIN_TOP_LEFT = "top-left" //+
 export const ORIGIN_TOP_RIGHT = "top-right"
 export const ORIGIN_BOTTOM_RIGHT = "bottom-right"
-export const ORIGIN_BOTTOM_LEFT = "bottom-left"
+export const ORIGIN_BOTTOM_LEFT = "bottom-left" //+
 export const ORIGIN_TOP_CENTER = "top-center"
 export const ORIGIN_BOTTOM_CENTER = "bottom-center"
-export const ORIGIN_CENTER_CENTER = "center-center"
+export const ORIGIN_CENTER_CENTER = "center-center" //+
+export const ORIGIN_LEFT_CENTER = "left-center" //+
+export const ORIGIN_RIGHT_CENTER = "right-center" //+
 
 export const defaultArrowStyle = {
     color: "#000",
@@ -68,6 +70,46 @@ export const drawArrows = (ctx, style) => {
         if (arrowY) {
             y = padding; y2 = height - padding
             x = (width - arrowY.size) / 2
+            line(ctx,{x, y},{x, y: y2}, styleY)
+            if (arrowY.factor) {
+                arrowUp()
+                arrowDown()
+            }
+        }
+    }
+
+    if (origin === ORIGIN_LEFT_CENTER) {
+        if (arrowX) {
+            x = padding; x2 = width - padding
+            y = (height - arrowX.size) / 2; y2 = y
+            line(ctx,{x, y},{x: x2, y: y2}, styleX)
+            if (arrowX.factor) {
+                arrowLeft()
+            }
+        }
+        if (arrowY) {
+            y = padding; y2 = height - padding
+            x = padding + styleY.size
+            line(ctx,{x, y},{x, y: y2}, styleY)
+            if (arrowY.factor) {
+                arrowUp()
+                arrowDown()
+            }
+        }
+    }
+
+    if (origin === ORIGIN_RIGHT_CENTER) {
+        if (arrowX) {
+            x = padding; x2 = width - padding
+            y = (height - arrowX.size) / 2; y2 = y
+            line(ctx,{x, y},{x: x2, y: y2}, styleX)
+            if (arrowX.factor) {
+                arrowRight()
+            }
+        }
+        if (arrowY) {
+            y = padding; y2 = height - padding
+            x = width - (padding + styleY.size)
             line(ctx,{x, y},{x, y: y2}, styleY)
             if (arrowY.factor) {
                 arrowUp()

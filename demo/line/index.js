@@ -1,6 +1,11 @@
 import {Chart} from "../../src/index.js"
 import {LineChart} from "../../src/index.js"
-import {ORIGIN_BOTTOM_LEFT, ORIGIN_CENTER_CENTER, ORIGIN_TOP_LEFT} from "../../src/mixins/arrows.js";
+import {
+    ORIGIN_BOTTOM_LEFT,
+    ORIGIN_CENTER_CENTER,
+    ORIGIN_LEFT_CENTER, ORIGIN_RIGHT_CENTER,
+    ORIGIN_TOP_LEFT
+} from "../../src/mixins/arrows.js";
 
 const chart = new Chart("#chart", {
     dpi: 2,
@@ -11,7 +16,7 @@ const chart = new Chart("#chart", {
     },
     grid: {},
     arrows: {
-        origin: ORIGIN_BOTTOM_LEFT
+        origin: ORIGIN_RIGHT_CENTER
     },
     cross: {},
 })
