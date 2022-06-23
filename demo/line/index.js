@@ -16,24 +16,23 @@ const chart1 = new Chart("#chart1", {
     dpi: 2,
     css: {
         border: "1px solid #ddd",
-        width: "600px",
-        height: "400px"
+        width: "800px",
+        height: "600px"
     },
     axis: {
-        origin: ORIGIN_CENTER_CENTER
-    }
-})
-
-const chart2 = new Chart("#chart2", {
-    dpi: 2,
-    css: {
-        border: "1px solid #ddd",
-        width: "600px",
-        height: "400px"
+        origin: ORIGIN_BOTTOM_RIGHT,
     },
-    axis: {
-        origin: ORIGIN_TOP_RIGHT
-    }
+    cross: {
+    },
+    grid: {
+        h: {
+            count: 20,
+        },
+        v: {
+            count: 20,
+        }
+    },
+    padding: "100, 20, 20, 100"
 })
 
 const chartData = []
@@ -69,26 +68,5 @@ chart1.add(new LineChart(chartData, {
     },
 }))
 
-chart2.add(new LineChart(chartData, {
-    boundaries: {
-        max: {
-            x: 100,
-            y: 100
-        },
-        increment: 0
-    },
-    lines: false,
-    dot: {
-        fill: "rgba(0,0,0,.2)",
-        color: "#ccc",
-        type: 'diamond'
-    },
-    values: {
-        shift: {
-            x: 0,
-            y: -10
-        }
-    },
-}))
 
 

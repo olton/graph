@@ -1,5 +1,5 @@
-export const vector = (ctx, from, to, style = {color: '#000', size: 1, dash: []}) => {
-    const {color, size, dash} = style
+export const vector = (ctx, from, to, style = {}) => {
+    const {color = '#000', size = 1, dash = []} = style
 
     ctx.beginPath()
     ctx.save()

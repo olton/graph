@@ -2,6 +2,9 @@ import {line} from "../primitives/line.js"
 import {merge} from "../helpers/merge.js";
 import {dot} from "../primitives/dot.js";
 import {vector} from "../primitives/vector.js";
+import {circle} from "../primitives/circle.js";
+import {square} from "../primitives/square.js";
+import {diamond} from "../primitives/diamond.js";
 
 export const defaultCrossLineStyle = {
     size: 1,
@@ -15,10 +18,10 @@ export const defaultCrossArcStyle = {
     color: "#000",
     fill: "transparent",
     radius: 20,
+    type: "circle"
 }
 
 export const defaultCrossStyle = {
-    padding: 0,
     line: {
         ...defaultCrossLineStyle
     },
@@ -27,14 +30,20 @@ export const defaultCrossStyle = {
     }
 }
 
-export const drawCross = (ctx, style, {proxy, dpi = 2}) => {
-    const crossStyle = merge({}, defaultCrossStyle, style)
-    const {padding, line: lineStyle, arc: arcStyle} = crossStyle
-    const crossLineStyle = merge({}, defaultCrossLineStyle, lineStyle)
-    const crossArcStyle = merge({}, defaultCrossArcStyle, arcStyle)
+const arcFunc = {
+    diamond,
+    circle,
+    square
+}
+
+export function drawCross(ctx, options = {}){
+    const {line: lineStyle, arc: arcStyle} = merge({}, defaultCrossStyle, options)
     const rect = ctx.canvas.getBoundingClientRect()
     const width = ctx.canvas.width
     const height = ctx.canvas.height
+    const dpi = this.dpi
+    const proxy = this.proxy
+    const padding = this.padding
 
     if (!proxy || !proxy.mouse) return
 
@@ -43,7 +52,10 @@ export const drawCross = (ctx, style, {proxy, dpi = 2}) => {
     x = (x - rect.left) * dpi
     y = (y - rect.top) * dpi
 
-    vector(ctx, {x, y: padding}, {x, y: height - padding}, crossLineStyle)
-    vector(ctx, {x: padding, y}, {x: width - padding, y}, crossLineStyle)
-    dot(ctx, [x, y, arcStyle.radius], crossArcStyle)
+    if ((y > padding.top && y < height - padding.bottom) && (x > padding.left && x < width - padding.right)) {
+        vector(ctx, {x: padding.left, y}, {x: width - padding.right, y}, lineStyle)
+        vector(ctx, {x, y: padding.top}, {x, y: height - padding.bottom}, lineStyle)
+
+        if (arcStyle.type !== 'none') arcFunc[arcStyle.type](ctx, [x, y, arcStyle.radius], arcStyle)
+    }
 }

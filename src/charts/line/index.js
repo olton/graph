@@ -1,9 +1,3 @@
-import {
-    ORIGIN_BOTTOM_CENTER,
-    ORIGIN_BOTTOM_LEFT,
-    ORIGIN_BOTTOM_RIGHT,
-    ORIGIN_CENTER_CENTER, ORIGIN_LEFT_CENTER, ORIGIN_RIGHT_CENTER, ORIGIN_TOP_CENTER, ORIGIN_TOP_LEFT, ORIGIN_TOP_RIGHT
-} from "../../mixins/axis.js";
 import {merge} from "../../helpers/merge.js";
 import {line} from "../../primitives/line.js";
 import {curve} from "../../primitives/curve.js";
@@ -13,6 +7,7 @@ import {triangle} from "../../primitives/triangle.js";
 import {diamond} from "../../primitives/diamond.js";
 import {text} from "../../primitives/text.js";
 import {defaultLineChartOptions} from "./default.js";
+import {origin} from "../../mixins/axis.js";
 
 const dotFunc = {
     circle,
@@ -33,13 +28,15 @@ export class LineChart {
         this.canvas = null
         this.graphs = []
 
+        const that = this
+
         this.data.forEach((data, index) => {
-            if (this.options.graphs[index]) {
-                this.graphs.push(this.options.graphs[index])
+            if (that.options.graphs[index]) {
+                that.graphs.push(that.options.graphs[index])
             } else {
-                this.graphs.push({
-                    dot: this.options.dot,
-                    line: this.options.line
+                that.graphs.push({
+                    dot: that.options.dot,
+                    line: that.options.line
                 })
             }
         })
@@ -51,8 +48,12 @@ export class LineChart {
 
     setSuperChart(chart){
         this.chart = chart
-        this.width = chart.viewWidth
-        this.height = chart.viewHeight
+        this.padding = chart.padding
+        this.fullWidth = chart.viewWidth
+        this.fullHeight = chart.viewHeight
+        this.width = chart.viewWidth - (chart.padding.left + chart.padding.right)
+        this.height = chart.viewHeight - (chart.padding.top + chart.padding.bottom)
+        this.origin = chart.options.axis.origin
 
         this.calcRatio()
     }
@@ -88,6 +89,15 @@ export class LineChart {
         this.ratioY = this.height / (this.maxY - this.minY)
     }
 
+    #inView(x, y){
+        const {left, right, top, bottom} = this.padding
+        const minX = left
+        const maxX = left + this.width
+        const minY = top
+        const maxY = top + this.height
+        return (x >= minX && x <= maxX) && (y >= minY && y <= maxY)
+    }
+
     draw(){
         if (!this.data || !this.data.length) return
 
@@ -104,63 +114,23 @@ export class LineChart {
 
             for(let i = 0; i < data.length; i++) {
                 let [x, y] = data[i]
-                let _x, _y, _mx, _my
+                let _x, _y
 
                 _x = x * this.ratioX
                 _y = y * this.ratioY
 
                 if (o.origin) {
-                    switch (this.chart.options.axis.origin) {
-                        case ORIGIN_BOTTOM_CENTER: {
-                            _x = this.width / 2 + _x
-                            _y = this.height - _y
-                            break
-                        }
-                        case ORIGIN_BOTTOM_RIGHT: {
-                            _x = this.width + _x
-                            _y = this.height - _y
-                            break
-                        }
-                        case ORIGIN_LEFT_CENTER: {
-                            _y = this.height / 2 - _y
-                            break
-                        }
-                        case ORIGIN_RIGHT_CENTER: {
-                            _x = this.width + _x
-                            _y = this.height / 2 - _y
-                            break
-                        }
-                        case ORIGIN_TOP_CENTER: {
-                            _x = this.width / 2 + _x
-                            _y = - _y
-                            break
-                        }
-                        case ORIGIN_CENTER_CENTER: {
-                            _x = this.width / 2 + _x
-                            _y = this.height / 2 - _y
-                            break
-                        }
-                        case ORIGIN_TOP_RIGHT: {
-                            _x = this.width + _x
-                            _y = - _y
-                            break
-                        }
-                        case ORIGIN_TOP_LEFT: {
-                            _y =  - _y
-                            break
-                        }
-                        case ORIGIN_BOTTOM_LEFT: {
-                            _y = this.height - _y
-                            break
-                        }
-                    }
+                    [_x, _y] = origin(_x, _y, this.width, this.height, this.origin, this.padding)
                 }
 
                 coords.push([_x, _y])
 
-                dotFunc[dotStyle.type](ctx, [_x, _y, 10], dotStyle)
+                console.log(x, y)
+                if (this.#inView(_x, _y)) {
+                    dotFunc[dotStyle.type](ctx, [_x, _y, dotStyle.size], dotStyle)
+                }
 
-                if (o.values.show) {
+                if (o.values && o.values.show) {
                     const val = o.values.template.replace('x', x).replace('y', y)
                     text(ctx, `${val}`, [_x + o.values.shift.x * dpi, _y + o.values.shift.y * dpi], o.values)
                 }

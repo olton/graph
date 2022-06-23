@@ -4,18 +4,27 @@ import {defaultGridStyle, drawGrid} from "../mixins/grid.js";
 import {defaultAxisesStyle, drawAxis} from "../mixins/axis.js";
 import {defaultCrossStyle, drawCross} from "../mixins/cross";
 import {merge} from "../helpers/merge.js";
+import {normPadding} from "../helpers/padding";
+
+export const defaultChartOptions = {
+    dpi: 1,
+    padding: 0,
+    grid: {
+        ...defaultGridStyle
+    },
+    axis: {
+        ...defaultAxisesStyle
+    },
+    cross: {
+        ...defaultCrossStyle
+    }
+}
 
 export class Chart {
-    options = {
-        dpi: 1,
-        padding: 0,
-        grid: defaultGridStyle,
-        axis: defaultAxisesStyle,
-        cross: defaultCrossStyle
-    }
-
     constructor(el, options = {}) {
-        this.options = merge({}, this.options, options)
+        const that = this
+
+        this.options = merge({}, defaultChartOptions, options)
         this.element = el
         this.container = null
         this.canvas = null
@@ -25,8 +34,7 @@ export class Chart {
         this.axis = null
         this.grid = null
         this.cross = null
-
-        const that = this
+        this.padding = normPadding(this.options.padding, this.options.dpi)
 
         this.proxy = new Proxy({}, {
             set(...args) {
@@ -89,7 +97,7 @@ export class Chart {
         this.viewWidth = this.dpi * this.width
         this.center = [this.viewWidth / 2, this.viewHeight / 2]
         this.radius = Math.min(this.viewHeight, this.viewWidth) / 2
-        this.padding = {
+        this.containerPadding = {
             top: (paddingTop + borderTop),
             right: (paddingRight + borderRight),
             bottom: (paddingBottom + borderBottom),
@@ -110,8 +118,8 @@ export class Chart {
     }
 
     setCanvasSize(){
-        this.canvas.style.height = this.height - this.padding.top - this.padding.bottom + 'px'
-        this.canvas.style.width = this.width - this.padding.left - this.padding.right + 'px'
+        this.canvas.style.height = this.height - this.containerPadding.top - this.containerPadding.bottom + 'px'
+        this.canvas.style.width = this.width - this.containerPadding.left - this.containerPadding.right + 'px'
         this.canvas.width = this.viewWidth
         this.canvas.height = this.viewHeight
     }
@@ -125,9 +133,9 @@ export class Chart {
 
         this.clearCanvas()
 
-        if (o.grid) drawGrid(this.ctx, typeof o.grid === "object" ? o.grid : undefined)
-        if (o.axis) drawAxis(this.ctx, typeof o.axis === "object" ? o.axis : undefined)
-        if (o.cross) drawCross(this.ctx, typeof o.cross === "object" ? o.cross : undefined, {proxy: this.proxy, dpi: this.dpi})
+        if (o.grid) drawGrid.call(this, this.ctx, typeof o.grid === "object" ? o.grid : undefined)
+        if (o.axis) drawAxis.call(this, this.ctx, typeof o.axis === "object" ? o.axis : undefined)
+        if (o.cross) drawCross.call(this, this.ctx, typeof o.cross === "object" ? o.cross : undefined)
 
         this.charts.forEach(chart => chart.draw())
     }

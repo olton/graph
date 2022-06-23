@@ -3,7 +3,7 @@ import {vector} from "../primitives/vector.js";
 
 export const defaultGridLineStyle = {
     color: "#e7e7e7",
-    dash: [5, 5],
+    dash: [],
     size: 1,
     count: 50
 }
@@ -14,36 +14,34 @@ export const defaultGridStyle = {
     },
     h: {
         ...defaultGridLineStyle
-    },
-    padding: 0
+    }
 }
 
-export const drawGrid = (ctx, options = {}) => {
+export function drawGrid (ctx, options = {}) {
     const gridStyle = merge({}, defaultGridStyle, options)
-    const {h, v, padding = 0} = gridStyle
-    const vLineStyle = merge({}, defaultGridLineStyle, h)
-    const hLineStyle = merge({}, defaultGridLineStyle, v)
+    const {h, v} = gridStyle
     const width = ctx.canvas.width
     const height = ctx.canvas.height
-    const stepX = ((width - padding * 2) / vLineStyle.count)
-    const stepY = ((height - padding * 2) / hLineStyle.count)
+    const padding = this.padding
+    const stepX = ((width - (padding.left + padding.right) ) / v.count)
+    const stepY = ((height - (padding.top + padding.bottom) ) / h.count)
+    let x, y, c
 
-    let y = padding
-    let x = padding
-
-    let counter = 0
+    x = padding.left
+    y = padding.top
+    c = 0
     do  {
-        vector(ctx, {x, y}, {x: width - padding, y}, hLineStyle)
+        vector(ctx, {x, y}, {x: width - padding.right, y}, h)
         y += stepY
-        counter++
-    } while (counter <= hLineStyle.count)
+        c++
+    } while (c <= h.count)
 
-    y = padding
-    x = padding
-    counter = 0
+    x = padding.left
+    y = padding.top
+    c = 0
     do {
-        vector(ctx, {x, y}, {x, y: height - padding}, vLineStyle)
+        vector(ctx, {x, y}, {x, y: height - padding.bottom}, v)
         x += stepX
-        counter++
-    } while (counter <= vLineStyle.count)
+        c++
+    } while (c <= v.count)
 }
