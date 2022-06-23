@@ -1,28 +1,30 @@
 import {debug} from "../helpers/debug.js";
 import {css, cssProp} from "../helpers/css.js";
 import {defaultGridStyle, drawGrid} from "../mixins/grid.js";
-import {defaultArrowsStyle, drawArrows} from "../mixins/arrows.js";
+import {defaultAxisesStyle, drawAxis} from "../mixins/axis.js";
 import {defaultCrossStyle, drawCross} from "../mixins/cross";
+import {merge} from "../helpers/merge.js";
 
 export class Chart {
     options = {
         dpi: 1,
-        width: '100%',
-        height: '100%',
-        padding: 10,
+        padding: 0,
         grid: defaultGridStyle,
-        arrows: defaultArrowsStyle,
+        axis: defaultAxisesStyle,
         cross: defaultCrossStyle
     }
 
     constructor(el, options = {}) {
-        this.options = Object.assign({}, this.options, options)
+        this.options = merge({}, this.options, options)
         this.element = el
         this.container = null
         this.canvas = null
         this.ctx = null
         this.charts = []
         this.raf = null
+        this.axis = null
+        this.grid = null
+        this.cross = null
 
         const that = this
 
@@ -97,7 +99,7 @@ export class Chart {
         this.createCanvas()
         this.setCanvasSize()
         this.addEvents()
-        this.resize()
+        this.draw()
     }
 
     createCanvas(){
@@ -123,15 +125,9 @@ export class Chart {
 
         this.clearCanvas()
 
-        if (o.grid) {
-            drawGrid(this.ctx, typeof o.grid === "object" ? o.grid : undefined)
-        }
-        if (o.arrows) {
-            drawArrows(this.ctx, typeof o.arrows === "object" ? o.arrows : undefined)
-        }
-        if (o.cross) {
-            drawCross(this.ctx, typeof o.cross === "object" ? o.cross : undefined, {proxy: this.proxy, dpi: this.dpi})
-        }
+        if (o.grid) drawGrid(this.ctx, typeof o.grid === "object" ? o.grid : undefined)
+        if (o.axis) drawAxis(this.ctx, typeof o.axis === "object" ? o.axis : undefined)
+        if (o.cross) drawCross(this.ctx, typeof o.cross === "object" ? o.cross : undefined, {proxy: this.proxy, dpi: this.dpi})
 
         this.charts.forEach(chart => chart.draw())
     }
@@ -145,7 +141,9 @@ export class Chart {
 
         for(let chart of charts) {
             if (!this.charts.includes(chart)) {
+                chart.setSuperChart( this )
                 this.charts.push(chart)
+                chart.draw()
             }
         }
     }

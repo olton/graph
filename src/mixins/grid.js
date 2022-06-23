@@ -1,4 +1,5 @@
-import {line} from "../primitives/line.js";
+import {merge} from "../helpers/merge.js";
+import {vector} from "../primitives/vector.js";
 
 export const defaultGridLineStyle = {
     color: "#e7e7e7",
@@ -18,10 +19,10 @@ export const defaultGridStyle = {
 }
 
 export const drawGrid = (ctx, options = {}) => {
-    const gridStyle = Object.assign({}, defaultGridStyle, options)
+    const gridStyle = merge({}, defaultGridStyle, options)
     const {h, v, padding = 0} = gridStyle
-    const vLineStyle = Object.assign({}, defaultGridLineStyle, h)
-    const hLineStyle = Object.assign({}, defaultGridLineStyle, v)
+    const vLineStyle = merge({}, defaultGridLineStyle, h)
+    const hLineStyle = merge({}, defaultGridLineStyle, v)
     const width = ctx.canvas.width
     const height = ctx.canvas.height
     const stepX = ((width - padding * 2) / vLineStyle.count)
@@ -32,7 +33,7 @@ export const drawGrid = (ctx, options = {}) => {
 
     let counter = 0
     do  {
-        line(ctx, {x, y}, {x: width - padding, y}, hLineStyle)
+        vector(ctx, {x, y}, {x: width - padding, y}, hLineStyle)
         y += stepY
         counter++
     } while (counter <= hLineStyle.count)
@@ -41,7 +42,7 @@ export const drawGrid = (ctx, options = {}) => {
     x = padding
     counter = 0
     do {
-        line(ctx, {x, y}, {x, y: height - padding}, vLineStyle)
+        vector(ctx, {x, y}, {x, y: height - padding}, vLineStyle)
         x += stepX
         counter++
     } while (counter <= vLineStyle.count)

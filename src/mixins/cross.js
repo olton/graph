@@ -1,9 +1,11 @@
 import {line} from "../primitives/line.js"
-import {arc} from "../primitives/arc.js";
+import {merge} from "../helpers/merge.js";
+import {dot} from "../primitives/dot.js";
+import {vector} from "../primitives/vector.js";
 
 export const defaultCrossLineStyle = {
     size: 1,
-    dash: [],
+    dash: [5, 5],
     color: "#000"
 }
 
@@ -11,9 +13,8 @@ export const defaultCrossArcStyle = {
     size: 1,
     dash: [4, 4],
     color: "#000",
-    radius: 10,
-    startAngle: 0,
-    endAngle: 2 * Math.PI
+    fill: "transparent",
+    radius: 20,
 }
 
 export const defaultCrossStyle = {
@@ -27,10 +28,10 @@ export const defaultCrossStyle = {
 }
 
 export const drawCross = (ctx, style, {proxy, dpi = 2}) => {
-    const crossStyle = Object.assign({}, defaultCrossStyle, style)
+    const crossStyle = merge({}, defaultCrossStyle, style)
     const {padding, line: lineStyle, arc: arcStyle} = crossStyle
-    const crossLineStyle = Object.assign({}, defaultCrossLineStyle, lineStyle)
-    const crossArcStyle = Object.assign({}, defaultCrossArcStyle, arcStyle)
+    const crossLineStyle = merge({}, defaultCrossLineStyle, lineStyle)
+    const crossArcStyle = merge({}, defaultCrossArcStyle, arcStyle)
     const rect = ctx.canvas.getBoundingClientRect()
     const width = ctx.canvas.width
     const height = ctx.canvas.height
@@ -42,7 +43,7 @@ export const drawCross = (ctx, style, {proxy, dpi = 2}) => {
     x = (x - rect.left) * dpi
     y = (y - rect.top) * dpi
 
-    line(ctx, {x, y: padding}, {x, y: height - padding}, crossLineStyle)
-    line(ctx, {x: padding, y}, {x: width - padding, y}, crossLineStyle)
-    arc(ctx, [x, y, arcStyle.radius, arcStyle.startAngle, arcStyle.endAngle], crossArcStyle)
+    vector(ctx, {x, y: padding}, {x, y: height - padding}, crossLineStyle)
+    vector(ctx, {x: padding, y}, {x: width - padding, y}, crossLineStyle)
+    dot(ctx, [x, y, arcStyle.radius], crossArcStyle)
 }

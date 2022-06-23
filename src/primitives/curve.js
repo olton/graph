@@ -1,5 +1,5 @@
-export const curve = (ctx, coords = [], style = {color: '#000', size: 1, dash: [], tension: 0.25}) => {
-    const {color, size, dash, tension} = style
+export const curve = (ctx, coords = [], tension = 0.25, style = {}) => {
+    const {color = '#000', size = 1, dash = []} = style
 
     ctx.beginPath()
     ctx.save()
