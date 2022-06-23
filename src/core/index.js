@@ -1,7 +1,7 @@
 import {debug} from "../helpers/debug.js";
 import {css, cssProp} from "../helpers/css.js";
 import {defaultGridStyle, drawGrid} from "../mixins/grid.js";
-import {defaultAxisesStyle, drawAxis} from "../mixins/axis.js";
+import {defaultAxisStyle, drawAxis} from "../mixins/axis.js";
 import {defaultCrossStyle, drawCross} from "../mixins/cross";
 import {merge} from "../helpers/merge.js";
 import {normPadding} from "../helpers/padding";
@@ -13,7 +13,7 @@ export const defaultChartOptions = {
         ...defaultGridStyle
     },
     axis: {
-        ...defaultAxisesStyle
+        ...defaultAxisStyle
     },
     cross: {
         ...defaultCrossStyle
@@ -31,9 +31,9 @@ export class Chart {
         this.ctx = null
         this.charts = []
         this.raf = null
-        this.axis = null
-        this.grid = null
-        this.cross = null
+        this.axis = this.options.axis
+        this.grid = this.options.grid
+        this.cross = this.options.cross
         this.padding = normPadding(this.options.padding, this.options.dpi)
 
         this.proxy = new Proxy({}, {

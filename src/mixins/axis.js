@@ -19,7 +19,7 @@ export const defaultAxisLineStyle = {
 }
 
 export const defaultAxisStyle = {
-    origin: ORIGIN_CENTER_CENTER,
+    origin: ORIGIN_BOTTOM_LEFT,
     padding: 0,
     x: {
         ...defaultAxisLineStyle
@@ -242,7 +242,7 @@ export const origin = (x, y, w, h, o, p = {}) => {
     switch (o) {
         case ORIGIN_CENTER_CENTER: {
             _x += w / 2 + left
-            _y += h / 2 + top
+            _y = top + h/2 - _y
             break
         }
         case ORIGIN_BOTTOM_RIGHT: {

@@ -19,9 +19,9 @@ const chart1 = new Chart("#chart1", {
         width: "800px",
         height: "600px"
     },
-    axis: {
-        origin: ORIGIN_BOTTOM_RIGHT,
-    },
+    // axis: {
+    //     origin: ORIGIN_BOTTOM_LEFT,
+    // },
     cross: {
     },
     grid: {
@@ -32,15 +32,17 @@ const chart1 = new Chart("#chart1", {
             count: 20,
         }
     },
-    padding: "100, 20, 20, 100"
+    padding: 20
 })
 
 const chartData = []
 const line1 = []
 
+line1.push([10, 10])
+line1.push([10, -10])
 line1.push([-10, 10])
 line1.push([-10, -10])
-line1.push([10, 10])
+
 line1.push([20, 5])
 line1.push([20, -15])
 
@@ -57,13 +59,16 @@ chart1.add(new LineChart(chartData, {
     lines: false,
     dot: {
         fill: "rgba(0,0,0,.2)",
-        color: "#ccc",
-        type: 'diamond'
+        type: 'circle',
+        size: 6
     },
     values: {
         shift: {
             x: 0,
             y: -10
+        },
+        font: {
+            size: 20
         }
     },
 }))

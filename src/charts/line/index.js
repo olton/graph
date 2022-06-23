@@ -7,7 +7,7 @@ import {triangle} from "../../primitives/triangle.js";
 import {diamond} from "../../primitives/diamond.js";
 import {text} from "../../primitives/text.js";
 import {defaultLineChartOptions} from "./default.js";
-import {origin} from "../../mixins/axis.js";
+import {origin, ORIGIN_BOTTOM_LEFT} from "../../mixins/axis.js";
 
 const dotFunc = {
     circle,
@@ -85,8 +85,10 @@ export class LineChart {
     }
 
     calcRatio(){
-        this.ratioX = this.width / (this.maxX - this.minX)
-        this.ratioY = this.height / (this.maxY - this.minY)
+        const side = Math.min(this.width, this.height)
+
+        this.ratioX = side / (this.maxX - this.minX)
+        this.ratioY = side / (this.maxY - this.minY)
     }
 
     #inView(x, y){
@@ -95,6 +97,7 @@ export class LineChart {
         const maxX = left + this.width
         const minY = top
         const maxY = top + this.height
+
         return (x >= minX && x <= maxX) && (y >= minY && y <= maxY)
     }
 
@@ -125,15 +128,15 @@ export class LineChart {
 
                 coords.push([_x, _y])
 
-                console.log(x, y)
                 if (this.#inView(_x, _y)) {
                     dotFunc[dotStyle.type](ctx, [_x, _y, dotStyle.size], dotStyle)
+
+                    if (o.values && o.values.show) {
+                        const val = o.values.template.replace('x', x).replace('y', y)
+                        text(ctx, `${val}`, [_x + o.values.shift.x * dpi, _y + o.values.shift.y * dpi], o.values)
+                    }
                 }
 
-                if (o.values && o.values.show) {
-                    const val = o.values.template.replace('x', x).replace('y', y)
-                    text(ctx, `${val}`, [_x + o.values.shift.x * dpi, _y + o.values.shift.y * dpi], o.values)
-                }
             }
             index++
 
