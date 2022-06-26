@@ -4,7 +4,14 @@ import {
     ORIGIN_BOTTOM_CENTER,
     ORIGIN_CENTER_CENTER,
 } from "../../src/mixins/axis.js";
-import {random} from "../../src/helpers/rand.js";
+
+const axis = {
+    style: {
+        size: 4,
+        factor: 20,
+        subFactor: 4
+    }
+}
 
 const chart1 = new Chart("#chart1", {
     dpi: 2,
@@ -16,14 +23,10 @@ const chart1 = new Chart("#chart1", {
     axis: {
         origin: ORIGIN_CENTER_CENTER,
         x: {
-            size: 4,
-            factor: 20,
-            subFactor: 4
+            ...axis
         },
         y: {
-            size: 4,
-            factor: 20,
-            subFactor: 4
+            ...axis
         }
     },
     cross: {

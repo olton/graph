@@ -1,5 +1,6 @@
 import {merge} from "../helpers/merge.js"
 import {vector} from "../primitives/vector.js"
+import {defaultLineStyle} from "../defaults/index.js";
 
 export const ORIGIN_TOP_LEFT = "top-left" //+
 export const ORIGIN_TOP_RIGHT = "top-right" //+
@@ -12,27 +13,30 @@ export const ORIGIN_LEFT_CENTER = "left-center" //+
 export const ORIGIN_RIGHT_CENTER = "right-center" //+
 
 export const defaultAxisLineStyle = {
-    color: "#000",
-    dash: [],
-    size: 1,
     factor: 20,
     subFactor: 2
 }
 
-export const defaultAxisStyle = {
+export const defaultAxis = {
     origin: ORIGIN_BOTTOM_LEFT,
     padding: 0,
     x: {
-        ...defaultAxisLineStyle
+        style: {
+            ...defaultLineStyle,
+            ...defaultAxisLineStyle
+        }
     },
     y: {
-        ...defaultAxisLineStyle
+        style: {
+            ...defaultLineStyle,
+            ...defaultAxisLineStyle
+        }
     },
 }
 
 export function drawAxis (ctx, options = {}) {
-    const axisStyle = merge({}, defaultAxisStyle, options)
-    const {x: styleX, y: styleY, origin} = axisStyle
+    const axis = merge({}, defaultAxis, options)
+    const {x: {style: styleX}, y: {style: styleY}, origin} = axis
     const width = ctx.canvas.width
     const height = ctx.canvas.height
     const padding = this.padding
