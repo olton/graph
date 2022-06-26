@@ -25,7 +25,9 @@ export const defaultLineChartOptions = {
         increment: 0
     },
     lines: true,
+    dots: true,
     origin: true,
+    maxGraphSize: 0,
     dot: {
         ...defaultDotStyle
     },

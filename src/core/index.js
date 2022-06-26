@@ -35,6 +35,7 @@ export class Chart {
         this.grid = this.options.grid
         this.cross = this.options.cross
         this.padding = normPadding(this.options.padding, this.options.dpi)
+        this.zero = null
 
         this.proxy = new Proxy({}, {
             set(...args) {
@@ -134,7 +135,7 @@ export class Chart {
         this.clearCanvas()
 
         if (o.grid) drawGrid.call(this, this.ctx, typeof o.grid === "object" ? o.grid : undefined)
-        if (o.axis) drawAxis.call(this, this.ctx, typeof o.axis === "object" ? o.axis : undefined)
+        if (o.axis) this.zero = drawAxis.call(this, this.ctx, typeof o.axis === "object" ? o.axis : undefined)
         if (o.cross) drawCross.call(this, this.ctx, typeof o.cross === "object" ? o.cross : undefined)
 
         this.charts.forEach(chart => chart.draw())

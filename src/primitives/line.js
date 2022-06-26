@@ -1,4 +1,6 @@
-export const line = (ctx, coords = [], {color = '#000', size = 1, dash = []} = {}) => {
+export const line = (ctx, coords = [], style = {}) => {
+    const {color = '#000', size = 1, dash = []} = style
+
     ctx.beginPath()
     ctx.save()
     ctx.setLineDash(dash)
@@ -6,7 +8,7 @@ export const line = (ctx, coords = [], {color = '#000', size = 1, dash = []} = {
     ctx.strokeStyle = color
 
     coords.map(([x, y]) => {
-        if (x !== null && y !== null) ctx.lineTo(x, y)
+        ctx.lineTo(x, y)
     })
 
     ctx.stroke()

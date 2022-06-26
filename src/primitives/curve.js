@@ -1,4 +1,4 @@
-export const curve = (ctx, coords = [], tension = 0.25, style = {}) => {
+export const curve = (ctx, coords = [], style = {}, tension = 0.25) => {
     const {color = '#000', size = 1, dash = []} = style
 
     ctx.beginPath()

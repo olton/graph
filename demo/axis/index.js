@@ -2,28 +2,117 @@ import {Chart, LineChart} from "../../src/index.js";
 import {ORIGIN_TOP_RIGHT} from "../../src/mixins/axis.js";
 
 (() => {
-    const chartData = []
-    const line1 = []
+    const parab = []
+    const giperb = []
 
-    line1.push([-10, 10])
-    line1.push([-10, -10])
-    line1.push([10, 10])
-    line1.push([10, -10])
-    // line1.push([20, 5])
-    // line1.push([20, -15])
+    for(let x = -50; x <= 50; x+=1) {
+        parab.push([x, Math.pow(x, 2)])
+        giperb.push([x, Math.pow(x, 3)])
+    }
 
-    chartData.push(line1)
+    const origins = {
+        "center-center": {
+            min: {
+                x: -100,
+                y: -100
+            },
+            max: {
+                x: 100,
+                y: 100
+            }
+        },
+        "top-left": {
+            min: {
+                x: 0,
+                y: -100
+            },
+            max: {
+                x: 100,
+                y: 0
+            }
+        },
+        "top-right": {
+            min: {
+                x: -100,
+                y: -100
+            },
+            max: {
+                x: 0,
+                y: 0
+            }
+        },
+        "bottom-right": {
+            min: {
+                x: 0,
+                y: -100
+            },
+            max: {
+                x: 100,
+                y: 0
+            }
+        },
+        "bottom-left": {
+            min: {
+                x: 0,
+                y: 0
+            },
+            max: {
+                x: 100,
+                y: 100
+            }
+        },
+        "top-center": {
+            min: {
+                x: -100,
+                y: -100
+            },
+            max: {
+                x: 100,
+                y: 0
+            }
+        },
+        "bottom-center": {
+            min: {
+                x: -100,
+                y: 0
+            },
+            max: {
+                x: 100,
+                y: 100
+            }
+        },
+        "left-center": {
+            min: {
+                x: 0,
+                y: -100
+            },
+            max: {
+                x: 100,
+                y: 100
+            }
+        },
+        "right-center": {
+            min: {
+                x: -100,
+                y: -100
+            },
+            max: {
+                x: 0,
+                y: 100
+            }
+        }
+    }
 
     const container = document.querySelector("#charts")
-    const origins = ["center-center", "top-left", "top-right", "bottom-right", "bottom-left", "top-center", "bottom-center", "left-center", "right-center"]
-    for(let origin of origins) {
+    for(let origin in origins) {
         const chart = document.createElement("div")
         chart.setAttribute("id", `chart-${origin}`)
         chart.className = 'chart'
         container.append(chart)
-        new Chart(`#chart-${origin}`, {
+        const chartCanvas = new Chart(`#chart-${origin}`, {
             dpi: 2,
             padding: "30, 20, 50, 40",
+            cross: false,
             axis: {
                 origin: origin
             },
@@ -35,11 +124,23 @@ import {ORIGIN_TOP_RIGHT} from "../../src/mixins/axis.js";
                     count: 20
                 }
             }
-        }).add(new LineChart(chartData, {
+        })
+        chartCanvas.add(new LineChart([parab], {
+            boundaries: origins[origin],
             values: false,
-            lines: false,
+            lines: true,
             dot: {
-                size: 4
+                size: 2,
+                color: "blue"
+            }
+        }))
+        chartCanvas.add(new LineChart([giperb], {
+            boundaries: origins[origin],
+            values: false,
+            lines: true,
+            dot: {
+                size: 2,
+                color: "red"
             }
         }))
     }
