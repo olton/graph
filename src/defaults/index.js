@@ -5,6 +5,13 @@ export const DOT_TYPE_CIRCLE = 'circle'
 export const DOT_TYPE_TRIANGLE = 'triangle'
 export const DOT_TYPE_SQUARE = 'square'
 export const DOT_TYPE_DIAMOND = 'diamond'
+export const TEXT_ALIGN_CENTER = 'center'
+export const TEXT_ALIGN_LEFT = 'left'
+export const TEXT_ALIGN_RIGHT = 'right'
+export const TEXT_TOP = 'text-top'
+export const TEXT_BOTTOM = 'text-bottom'
+export const TEXT_RIGHT = 'text-right'
+export const TEXT_LEFT = 'text-left'
 
 export const defaultDotStyle = {
     type: DOT_TYPE_DOT,
@@ -29,39 +36,20 @@ export const defaultFontStyle = {
     family: 'sans-serif'
 }
 
-export const defaultLabelStyle = {
-    color: '#000',
-    font: {
-        ...defaultFontStyle
-    },
-    count: 5,
-    fixed: false,
-    opposite: false,
+export const defaultTextStyle = {
+    color: "#000",
     angle: 0,
-    align: 'center',
-    shift: {
-        x: 0,
-        y: 0
-    },
-    skip: 0,
-    showLine: true,
-    showLabel: true,
-    showMin: true,
-    step: "auto"
+    align: TEXT_ALIGN_LEFT,
+    position: null,
+    translate: [0,0]
 }
 
 export const defaultValueStyle = {
-    color: '#000',
+    ...defaultTextStyle,
     font: {
         ...defaultFontStyle
     },
     fixed: false,
-    angle: 0,
-    align: 'center',
-    shift: {
-        x: 0,
-        y: 0
-    },
     template: `[x, y]`,
     show: true
 }

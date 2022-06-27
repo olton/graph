@@ -13,7 +13,7 @@ const axis = {
     }
 }
 
-const chart1 = new Chart("#chart1", {
+const chart1 = new Chart("#chart", {
     dpi: 2,
     css: {
         border: "1px solid #ddd",
@@ -21,7 +21,7 @@ const chart1 = new Chart("#chart1", {
         height: "800px"
     },
     axis: {
-        origin: ORIGIN_TOP_LEFT,
+        origin: ORIGIN_CENTER_CENTER,
         x: {
             ...axis
         },
@@ -39,7 +39,16 @@ const chart1 = new Chart("#chart1", {
             count: 20,
         }
     },
-    padding: 20
+    padding: "100,20,20,20",
+    title: {
+        text: "Polar Rouse\nGraph System for Metro 5 Demo",
+        position: "top-left",
+        align: "center",
+        font: {
+            size: 32
+        },
+        translate: [0,50],
+    }
 })
 
 const rouse = []
@@ -75,3 +84,7 @@ let line = new LineChart([rouse], {
 
 chart1.add(line)
 
+const ch = document.querySelector("#chart")
+ch.addEventListener("click", ()=>{
+    chart1.saveAs()
+})

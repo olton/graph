@@ -88,8 +88,11 @@ export class LineChart {
     }
 
     calcRatio(){
-        this.ratioX = this.width / (this.maxX - this.minX)
-        this.ratioY = this.height / (this.maxY - this.minY)
+        const a = ["top-left", "top-right", "bottom-left", "bottom-right"]
+        const mod = a.includes(this.origin) ? 2 : 1
+
+        this.ratioX = this.width / (this.maxX - this.minX) * mod
+        this.ratioY = this.height / (this.maxY - this.minY) * mod
     }
 
     add(index, [x, y], updateMinMax = true){
@@ -130,8 +133,9 @@ export class LineChart {
     draw(){
         if (!this.data || !this.data.length) return
 
-        const coords = []
+        const coords = [], include = []
         let index = 0
+        const that = this
         const ctx = this.chart.ctx
         const dpi = this.chart.dpi
         const o = this.options
@@ -139,6 +143,7 @@ export class LineChart {
         for(let data of this.data) {
             const graphStyle = this.graphs[index]
             const dotStyle = graphStyle.dot
+            const dotColor = dotStyle.color
             const lineStyle = graphStyle.line
 
             for(let i = 0; i < data.length; i++) {
@@ -152,17 +157,19 @@ export class LineChart {
                     [_x, _y] = toOrigin(_x, _y, this.chart.zero)
                 }
 
+                coords.push([_x, _y, x, y])
+
                 if (this.#inView(_x, _y)) {
-                    coords.push([_x, _y, x, y])
+                    include.push([_x, _y, x, y])
                 }
             }
 
             if (o.lines) {
-                lineFunc[lineStyle.type](ctx, coords, lineStyle)
+                lineFunc[lineStyle.type](ctx, include, lineStyle)
             }
 
             if (o.dots) {
-                for(let [_x, _y, x, y] of coords) {
+                for(let [_x, _y, x, y] of include) {
                     dotFunc[dotStyle.type](ctx, [_x, _y, dotStyle.size], dotStyle)
 
                     if (o.values && o.values.show) {

@@ -1,6 +1,7 @@
-export const text = (ctx, text, [x = 0, y = 0], textStyle = {}) => {
+export const text = (ctx, text, [x = 0, y = 0, w = 0], textStyle = {}) => {
     const {align = 'left', baseLine = 'middle', color = '#000', stroke = '#000', font = {}, angle = 0, translate = [0,0]} = textStyle
     const {style = 'normal', weight = 'normal', size = 12, lineHeight = 1, family = 'sans-serif'} = font
+    let textWidth = 0
 
     let tX = 0, tY = 0
 
@@ -21,9 +22,13 @@ export const text = (ctx, text, [x = 0, y = 0], textStyle = {}) => {
     ctx.textBaseline = baseLine
 
     const lines = text.toString().split('\n')
+    for(let line of lines) {
+        const _w = ctx.measureText(text).width
+        if (_w > textWidth) textWidth = _w
+    }
 
     lines.map( (str, i) => {
-        ctx.fillText(str, x, y + (y * i * lineHeight))
+        ctx.fillText(str, x, y + (y * i * lineHeight), w || textWidth)
     })
 
     ctx.closePath()

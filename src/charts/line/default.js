@@ -37,7 +37,7 @@ export const defaultLineChartOptions = {
     font: {
         ...defaultFontStyle
     },
-    text: {
+    title: {
         align: 'left',
         baseLine: 'middle',
         color: '#000',

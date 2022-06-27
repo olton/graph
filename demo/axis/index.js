@@ -12,6 +12,10 @@ import {ORIGIN_TOP_RIGHT} from "../../src/mixins/axis.js";
     }
 
     const originsArray = ["center-center", "top-left", "top-right", "bottom-right", "bottom-left", "top-center", "bottom-center", "left-center", "right-center"]
+    const graphColor = {
+        size: 1,
+        color: "#ff0000"
+    }
 
     const container = document.querySelector("#charts")
     for(let origin of originsArray) {
@@ -24,7 +28,17 @@ import {ORIGIN_TOP_RIGHT} from "../../src/mixins/axis.js";
             padding: "10",
             cross: false,
             axis: {
-                origin: origin
+                origin: origin,
+                x: {
+                    style: {
+                        size: 2
+                    }
+                },
+                y: {
+                    style: {
+                        size: 2
+                    }
+                }
             },
             grid: {
                 h: {
@@ -49,8 +63,11 @@ import {ORIGIN_TOP_RIGHT} from "../../src/mixins/axis.js";
             values: false,
             lines: true,
             dot: {
-                size: 1,
-                color: "blue"
+                ...graphColor
+            },
+            line: {
+                ...graphColor,
+                type: "line"
             }
         }))
     }
