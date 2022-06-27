@@ -28,7 +28,7 @@ export const text = (ctx, text, [x = 0, y = 0, w = 0], textStyle = {}) => {
     }
 
     lines.map( (str, i) => {
-        ctx.fillText(str, x, y + (y * i * lineHeight), w || textWidth)
+        ctx.fillText(str, x, y + (i * lineHeight * font.size), w || textWidth)
     })
 
     ctx.closePath()

@@ -4,6 +4,7 @@ import {
     ORIGIN_BOTTOM_CENTER,
     ORIGIN_CENTER_CENTER, ORIGIN_TOP_LEFT,
 } from "../../src/mixins/axis.js";
+import {TEXT_BOTTOM, TEXT_TOP} from "../../src/defaults/index.js";
 
 const axis = {
     style: {
@@ -39,15 +40,15 @@ const chart1 = new Chart("#chart", {
             count: 20,
         }
     },
-    padding: "100,20,20,20",
+    padding: "50,20,20,20",
     title: {
         text: "Polar Rouse\nGraph System for Metro 5 Demo",
-        position: "top-left",
+        position: TEXT_TOP,
         align: "center",
         font: {
             size: 32
         },
-        translate: [0,50],
+        translate: [0,0],
     }
 })
 

@@ -5,7 +5,7 @@ import {defaultAxis, drawAxis} from "../mixins/axis.js";
 import {defaultCrossStyle, drawCross} from "../mixins/cross";
 import {merge} from "../helpers/merge.js";
 import {normPadding} from "../helpers/padding";
-import {defaultFontStyle, defaultTextStyle, TEXT_TOP} from "../defaults/index.js";
+import {defaultFontStyle, defaultTextStyle, TEXT_BOTTOM, TEXT_TOP} from "../defaults/index.js";
 import {text} from "../primitives/text.js";
 
 export const defaultChartOptions = {
@@ -159,7 +159,8 @@ export class Chart {
         }
 
         switch (position) {
-            default: x += (this.viewWidth - textWidth)/2; y += font.size; w = this.viewWidth - this.padding.left - this.padding.right
+            case TEXT_BOTTOM: x = (this.viewWidth - textWidth)/2; y = font.size + this.viewHeight - this.padding.bottom; w = this.viewWidth - this.padding.left - this.padding.right; break;
+            case TEXT_TOP   : x = (this.viewWidth - textWidth)/2; y = font.size; w = this.viewWidth - this.padding.left - this.padding.right; break;
         }
 
         text(this.ctx, titleText, [x, y, w], this.options.title)
