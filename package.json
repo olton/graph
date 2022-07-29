@@ -1,9 +1,12 @@
 {
     "name": "@olton/grpah",
-    "version": "0.1.0",
+    "version": "0.0.1",
     "license": "MIT",
-    "main": "dist/string.js",
+    "main": "dist/graph.js",
     "type": "module",
+    "publishConfig": {
+        "registry": "https://npm.pkg.github.com/olton"
+    },
     "scripts": {
         "clear": "shx rm -rf dist/* lib/*",
         "prebuild": "npm run clear",
