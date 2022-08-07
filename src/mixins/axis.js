@@ -28,7 +28,7 @@ export const defaultAxisLabelStyle = {
 }
 
 const factor = {
-    factor: 20,
+    factor: 10,
     subFactor: 2
 }
 
@@ -267,7 +267,7 @@ export function drawAxis (ctx, options = {}) {
         if (styleY) {
             axisVerticalRight()
             if (styleY.factor) {
-                arrowDown(x2, y2)
+                arrowDown(x2-2, y2)
             }
             zero.y = y
         }

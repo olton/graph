@@ -8,8 +8,22 @@ import {diamond} from "../../primitives/diamond.js";
 import {dot} from "../../primitives/dot.js";
 import {text} from "../../primitives/text.js";
 import {defaultLineChartGraph, defaultLineChartOptions} from "./default.js";
-import {toOrigin} from "../../mixins/axis.js";
+import {
+    ORIGIN_BOTTOM_CENTER,
+    ORIGIN_BOTTOM_LEFT, ORIGIN_BOTTOM_RIGHT,
+    ORIGIN_CENTER_CENTER, ORIGIN_LEFT_CENTER, ORIGIN_RIGHT_CENTER,
+    ORIGIN_TOP_CENTER,
+    ORIGIN_TOP_LEFT,
+    ORIGIN_TOP_RIGHT,
+    toOrigin
+} from "../../mixins/axis.js";
 import {defaultDotStyle, defaultLineStyle} from "../../defaults/index.js";
+import {
+    drawMaxXBoundaries, drawMaxYBoundaries,
+    drawMinXBoundaries,
+    drawMinYBoundaries,
+    drawZeroBoundaries
+} from "../../mixins/boundaries.js";
 
 const dotFunc = {
     circle,
@@ -57,27 +71,29 @@ export class LineChart {
         this.width = chart.viewWidth - (chart.padding.left + chart.padding.right)
         this.height = chart.viewHeight - (chart.padding.top + chart.padding.bottom)
         this.origin = chart.options.axis.origin
+        this.zero = chart.zero
+        this.dpi = chart.options.dpi
 
         this.calcRatio()
     }
 
     calcMinMax(){
-        if (!this.data || !this.data.length) return
+        // if (!this.data || !this.data.length) return
 
         let minX = this.options.boundaries.min.x,
             maxX = this.options.boundaries.max.x
         let minY = this.options.boundaries.min.y,
             maxY = this.options.boundaries.max.y
 
-        for(let lineData of this.data) {
-            for(let point of lineData) {
-                const [x, y] = point
-                if (x < minX) minX = x
-                if (x > maxX) maxX = x
-                if (y < minY) minY = y
-                if (y > maxY) maxY = y
-            }
-        }
+        // for(let lineData of this.data) {
+        //     for(let point of lineData) {
+        //         const [x, y] = point
+        //         if (x < minX) minX = x
+        //         if (x > maxX) maxX = x
+        //         if (y < minY) minY = y
+        //         if (y > maxY) maxY = y
+        //     }
+        // }
 
         const inc = this.options.boundaries.increment / 100
 
@@ -85,6 +101,9 @@ export class LineChart {
         this.maxX = maxX + maxX * inc
         this.minY = minY + minY * inc
         this.maxY = maxY + maxY * inc
+
+        // console.log("x..X", this.minX, this.maxX)
+        // console.log("y..Y", this.minY, this.maxY)
     }
 
     calcRatio(){
@@ -93,6 +112,9 @@ export class LineChart {
 
         this.ratioX = this.width / (this.maxX - this.minX) * mod
         this.ratioY = this.height / (this.maxY - this.minY) * mod
+
+        // console.log("RX", this.ratioX)
+        // console.log("RY", this.ratioY)
     }
 
     add(index, [x, y], updateMinMax = true){
@@ -100,10 +122,12 @@ export class LineChart {
         const maxSize = o.maxGraphSize
 
         if (maxSize) {
-            while (this.data[index].length > maxSize) {
+            while (this.data[index].length > maxSize - 1) {
                 this.data[index].shift()
             }
         }
+
+        console.log("add", x, y)
 
         this.data[index].push([x, y])
 
@@ -117,20 +141,48 @@ export class LineChart {
             this.calcRatio()
         }
 
+        console.log("X", this.minX, this.maxX)
+        console.log("Y", this.minY, this.maxY)
+
         this.chart.resize()
     }
 
     #inView(x, y){
         const {left, top} = this.padding
-        const minX = left + 0
-        const maxX = left + this.width - 0
-        const minY = top + 0
-        const maxY = top + this.height - 0
+        const minX = left - 1
+        const maxX = left + this.width + 1
+        const minY = top - 1
+        const maxY = top + this.height + 1
 
         return (x >= minX && x <= maxX) && (y >= minY && y <= maxY)
     }
 
-    draw(){
+    drawBoundaries(){
+        const {zero, minX, maxX, minY, maxY, style, zeroPoint} = this.options.boundariesValues
+
+        if (zero) {
+            const text = `${(this.minX+this.maxX)/2}, ${(this.minY+this.maxY)/2}`
+            drawZeroBoundaries(this.chart.ctx, this.zero, this.origin, text, {...style, zeroPoint })
+        }
+        if (minX) {
+            const text = `${this.minX}`
+            drawMinXBoundaries(this.chart.ctx, this.minX * this.ratioX, this.zero, this.origin, text, style)
+        }
+        if (maxX) {
+            const text = `${this.maxX}`
+            drawMaxXBoundaries(this.chart.ctx, this.maxX * this.ratioX, this.zero, this.origin, text, style)
+        }
+        if (minY) {
+            const text = `${this.minY}`
+            drawMinYBoundaries(this.chart.ctx, this.minY * this.ratioY, this.zero, this.origin, text, style)
+        }
+        if (maxY) {
+            const text = `${this.maxY}`
+            drawMaxYBoundaries(this.chart.ctx, this.maxY * this.ratioY, this.zero, this.origin, text, style)
+        }
+    }
+
+    plotter(){
         if (!this.data || !this.data.length) return
 
         const coords = [], include = []
@@ -150,10 +202,12 @@ export class LineChart {
                 let [x, y] = data[i]
                 let _x, _y
 
-                _x = Math.round((o.origin ? x : x - this.minX) * this.ratioX)
-                _y = Math.round((o.origin ? y : y - this.minY) * this.ratioY)
+                _x = Math.round((this.origin ? x : x - this.minX) * this.ratioX)
+                _y = Math.round((this.origin ? y : y - this.minY) * this.ratioY)
 
-                if (o.origin) {
+                // console.log("OR", _x, _y);
+                // console.log(this.origin);
+                if (this.origin) {
                     [_x, _y] = toOrigin(_x, _y, this.chart.zero)
                 }
 
@@ -174,7 +228,7 @@ export class LineChart {
 
                     if (o.values && o.values.show) {
                         const val = o.values.template.replace('x', x).replace('y', y)
-                        text(ctx, `${val}`, [_x + o.values.shift.x * dpi, _y + o.values.shift.y * dpi], o.values)
+                        text(ctx, `${val}`, [_x + o.values.shift.x * dpi, _y + o.values.shift.y * dpi, 0], o.values)
                     }
                 }
             }
@@ -183,6 +237,11 @@ export class LineChart {
 
             index++
         }
+    }
+
+    draw(){
+        this.drawBoundaries()
+        this.plotter()
     }
 }
 

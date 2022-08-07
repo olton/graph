@@ -17,11 +17,11 @@ const chart1 = new Chart("#chart1", {
     dpi: 2,
     css: {
         border: "1px solid #ddd",
-        width: "800px",
-        height: "600px"
+        width: "700px",
+        height: "700px"
     },
     axis: {
-        origin: ORIGIN_BOTTOM_LEFT,
+        origin: ORIGIN_TOP_RIGHT,
     },
     cross: {
     },
@@ -39,22 +39,22 @@ const chart1 = new Chart("#chart1", {
 const chartData = []
 const line1 = []
 
-// line1.push([10, 10])
-// line1.push([10, -10])
-// line1.push([-10, 10])
-// line1.push([-10, -10])
-//
-// line1.push([20, 5])
-// line1.push([20, -15])
-//
-//chartData.push(line1)
-
-for(let i = 1; i <= 50; i+=1) {
-    line1.push([i*2, random(40, 70)])
-}
-chartData.push(line1)
+// for(let i = 0; i <= 25; i++) {
+//     const x = i*4
+//     const y = random(20, 80)
+//     line1.push([x, y])
+// }
 
 console.log(line1)
+
+line1.push([100, 0])
+// line1.push([-50, -50])
+// line1.push([-10, 10])
+// line1.push([10, 10])
+// line1.push([50, 50])
+// line1.push([100, 0])
+
+chartData.push(line1)
 
 let line = new LineChart(chartData, {
     graphs: [
@@ -68,11 +68,11 @@ let line = new LineChart(chartData, {
     ],
     boundaries: {
         min: {
-            x: 0,
-            y: 0
+            x: 200,
+            y: -100
         },
         max: {
-            x: 100,
+            x: 300,
             y: 100
         }
     },
@@ -94,15 +94,20 @@ let line = new LineChart(chartData, {
         },
         template: `x,y`
     },
-    maxGraphSize: 50
+    maxGraphSize: 26
 })
 
 chart1.add(line)
 
-let index = 50
-setInterval(()=>{
-    line.add(0,[index++*2, random(40, 70)])
-}, 1000)
+// let index = 100
+// setInterval(()=>{
+//     index+=4
+//     const x = index
+//     const y = random(20, 80)
+//     line.add(0,[x, y])
+//     console.log(x, y)
+// }, 1000)
+
 
 
 

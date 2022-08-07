@@ -3,15 +3,15 @@ import {ORIGIN_TOP_RIGHT} from "../../src/mixins/axis.js";
 
 (() => {
     const rouse = []
-    const a = 10
-    for(let t = 0; t <= Math.PI * 2; t+=.01) {
-        const r = Math.sin(a * t)
-        const x = r * Math.cos(t)
-        const y = r * Math.sin(t)
-        rouse.push([x, y])
-    }
+    // const a = 10
+    // for(let t = 0; t <= Math.PI * 2; t+=.01) {
+    //     const r = Math.sin(a * t)
+    //     const x = r * Math.cos(t)
+    //     const y = r * Math.sin(t)
+    //     rouse.push([x, y])
+    // }
 
-    const originsArray = ["center-center", "top-left", "top-right", "bottom-right", "bottom-left", "top-center", "bottom-center", "left-center", "right-center"]
+    const originsArray = ["center-center", "top-left", "top-center", "top-right", "bottom-left", "bottom-center", "bottom-right", "left-center", "right-center"]
     const graphColor = {
         size: 1,
         color: "#ff0000"
@@ -19,6 +19,8 @@ import {ORIGIN_TOP_RIGHT} from "../../src/mixins/axis.js";
 
     const container = document.querySelector("#charts")
     for(let origin of originsArray) {
+        // console.log(origin)
+
         const chart = document.createElement("div")
         chart.setAttribute("id", `chart-${origin}`)
         chart.className = 'chart'
@@ -49,18 +51,23 @@ import {ORIGIN_TOP_RIGHT} from "../../src/mixins/axis.js";
                 }
             }
         })
-        chartCanvas.add(new LineChart([rouse], {
+        // continue
+        chartCanvas.add(new LineChart([], {
             boundaries: {
                 min: {
-                    x: -1,
-                    y: -1
+                    x: -100,
+                    y: -100
                 },
                 max: {
-                    x: 1,
-                    y: 1
+                    x: 100,
+                    y: 100
                 }
             },
-            values: false,
+            boundariesValues: {
+                zero: true,
+                zeroPoint: true
+            },
+            // values: false,
             lines: true,
             dot: {
                 ...graphColor

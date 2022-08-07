@@ -1,4 +1,4 @@
-import {defaultDotStyle, defaultLineStyle, defaultFontStyle, defaultValueStyle, defaultLabelStyle} from "../../defaults/index.js";
+import {defaultDotStyle, defaultLineStyle, defaultFontStyle, defaultValueStyle} from "../../defaults/index.js";
 
 export const defaultLineChartGraph = {
     dot: {
@@ -59,4 +59,15 @@ export const defaultLineChartOptions = {
     values: {
         ...defaultValueStyle
     },
+    boundariesValues: {
+        style: {
+            ...defaultValueStyle
+        },
+        zeroPoint: false,
+        zero: false,
+        minX: false,
+        maxX: false,
+        minY: false,
+        maxY: false
+    }
 }
