@@ -13,3 +13,4 @@ packages/**/coverage
 .cache
 .coverage
 .parcel-cache
+.npmrc

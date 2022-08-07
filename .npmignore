@@ -6,3 +6,4 @@ temp
 lib
 node_modules
 test
+.npmrc

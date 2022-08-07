@@ -1,8 +1,8 @@
 {
-    "name": "@olton/grpah",
-    "version": "0.1.0",
+    "name": "@olton/graph",
+    "version": "0.0.1",
     "license": "MIT",
-    "main": "dist/string.js",
+    "main": "dist/graph.js",
     "type": "module",
     "scripts": {
         "clear": "shx rm -rf dist/* lib/*",
@@ -10,6 +10,34 @@
         "build": "rollup --config",
         "test": "npm run build & jest"
     },
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/olton/query.git"
+    },
+    "publishConfig": {
+        "registry": "https://npm.pkg.github.com/olton"
+    },
+    "keywords": [
+        "string",
+        "javascript",
+        "library"
+    ],
+    "bugs": {
+        "url": "https://github.com/olton/query/issues"
+    },
+    "author": "Serhii Pimenov <serhii@pimenov.com.ua> (https://pimenov.com.ua/)",
+    "browserslist": [
+        "last 2 versions",
+        "not ie >= 0",
+        "not ie_mob >= 0",
+        "not op_mini all",
+        "not op_mob >= 0",
+        "not kaios >= 0",
+        "not samsung >= 0",
+        "not baidu >= 0",
+        "not bb >= 0",
+        "maintained node versions"
+    ],
     "devDependencies": {
         "parcel": "^2.6.1",
         "@babel/plugin-proposal-class-properties": "^7.17.12",
