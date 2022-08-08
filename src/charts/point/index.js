@@ -19,6 +19,7 @@ import {
     drawZeroBoundaries
 } from "../../mixins/boundaries.js";
 import {randomColor} from "../../helpers/random-color.js";
+import {capitalize} from "../../helpers/capitalize.js";
 
 const dotFunc = {
     drawCircle,
@@ -179,7 +180,7 @@ export class PointChart {
             }
 
             if (o.lines) {
-                lineFunc[lineStyle.type](ctx, include, lineStyle)
+                lineFunc[`draw${capitalize(lineStyle.type)}`](ctx, include, lineStyle)
             }
 
             if (o.dots) {
@@ -187,10 +188,11 @@ export class PointChart {
                     if (dotStyle.color === 'random') {
                         dotStyle.color = randomColor()
                     }
-                    dotFunc[dotStyle.type](ctx, [_x, _y, dotStyle.size], dotStyle)
+                    dotFunc[`draw${capitalize(dotStyle.type)}`](ctx, [_x, _y, dotStyle.size], dotStyle)
+
                     if (o.values && o.values.show) {
                         const val = o.values.template.replace('x', x).replace('y', y)
-                        text(ctx, `${val}`, [_x + o.values.translate[0] * dpi, _y + o.values.translate[1] * dpi, 0], o.values)
+                        drawText(ctx, `${val}`, [_x + o.values.translate[0] * dpi, _y + o.values.translate[1] * dpi, 0], o.values)
                     }
                 }
             }

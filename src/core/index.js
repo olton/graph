@@ -9,6 +9,7 @@ import {merge} from "../helpers/merge.js";
 import {normPadding} from "../helpers/padding.js";
 import {defaultFontStyle, defaultTextStyle, TEXT_BOTTOM, TEXT_TOP} from "../defaults/index.js";
 import {drawText} from "../primitives/text.js";
+import {textWidth} from "../helpers/text-width.js";
 
 export const defaultChartOptions = {
     dpi: 1,
@@ -50,6 +51,8 @@ export class Chart {
         this.cross = this.options.cross
         this.padding = normPadding(this.options.padding, this.options.dpi)
         this.zero = null
+        this.texts = []
+        this.images = []
 
         this.proxy = new Proxy({}, {
             set(...args) {
@@ -197,10 +200,6 @@ export class Chart {
                 chart.draw()
             }
         }
-    }
-
-    addText(text, [x, y], style){
-        text(this.ctx, text, [x, y])
     }
 
     mouseMove(e){

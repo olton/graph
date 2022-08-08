@@ -4,7 +4,7 @@ import {
     ORIGIN_BOTTOM_CENTER,
     ORIGIN_CENTER_CENTER, ORIGIN_TOP_LEFT,
 } from "../../src/mixins/axis.js";
-import {TEXT_BOTTOM, TEXT_TOP} from "../../src/defaults/index.js";
+import {defaultTextStyle, TEXT_BOTTOM, TEXT_TOP} from "../../src/defaults/index.js";
 
 const axis = {
     style: {
@@ -14,7 +14,7 @@ const axis = {
     }
 }
 
-const chart1 = new Chart("#chart", {
+const chart = new Chart("#chart", {
     dpi: 2,
     css: {
         border: "1px solid #ddd",
@@ -83,9 +83,11 @@ let line = new PointChart([rouse], {
     }
 })
 
-chart1.addChart(line)
+// chart.addChart(line)
 
 const ch = document.querySelector("#chart")
 ch.addEventListener("click", ()=>{
-    chart1.saveAs()
+    chart.saveAs()
 })
+
+chart.addText(`Gloriatur bibendum venenatis nisi\nquis dico posidonium`, [900, 100], {...defaultTextStyle, color: "green"})

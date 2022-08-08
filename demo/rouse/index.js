@@ -1,9 +1,10 @@
-import {Chart} from "../../src/index.js"
+import {Chart, TextChart} from "../../src/index.js"
 import {PointChart} from "../../src/index.js";
 import {
     ORIGIN_BOTTOM_CENTER,
     ORIGIN_CENTER_CENTER, ORIGIN_TOP_LEFT,
 } from "../../src/mixins/axis.js";
+import {defaultTextStyle} from "../../src/defaults/index.js";
 
 const axis = {
     style: {
@@ -74,4 +75,7 @@ let line = new PointChart([rouse], {
 })
 
 chart1.addChart(line)
+
+const text = new TextChart(`Copyright 2022 by Serhii Pimenov.\nAll Rights Reserver.`, [0, 10], {...defaultTextStyle})
+chart1.addChart(text)
 

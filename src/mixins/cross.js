@@ -1,10 +1,9 @@
-import {drawLine} from "../primitives/line.js"
-import {drawDot} from "../primitives/dot.js";
 import {drawVector} from "../primitives/vector.js";
 import {drawCircle} from "../primitives/circle.js";
 import {drawSquare} from "../primitives/square.js";
 import {drawDiamond} from "../primitives/diamond.js";
 import {merge} from "../helpers/merge.js";
+import {capitalize} from "../helpers/capitalize.js";
 
 export const defaultCrossLineStyle = {
     size: 1,
@@ -53,9 +52,9 @@ export function drawCross(ctx, options = {}){
     y = (y - rect.top) * dpi
 
     if ((y > padding.top && y < height - padding.bottom) && (x > padding.left && x < width - padding.right)) {
-        vector(ctx, {x: padding.left, y}, {x: width - padding.right, y}, lineStyle)
-        vector(ctx, {x, y: padding.top}, {x, y: height - padding.bottom}, lineStyle)
+        drawVector(ctx, {x: padding.left, y}, {x: width - padding.right, y}, lineStyle)
+        drawVector(ctx, {x, y: padding.top}, {x, y: height - padding.bottom}, lineStyle)
 
-        if (arcStyle.type !== 'none') arcFunc[arcStyle.type](ctx, [x, y, arcStyle.radius], arcStyle)
+        if (arcStyle.type !== 'none') arcFunc[`draw${capitalize(arcStyle.type)}`](ctx, [x, y, arcStyle.radius], arcStyle)
     }
 }
