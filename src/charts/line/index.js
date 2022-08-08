@@ -299,7 +299,10 @@ export class LineChart {
 
         this.tooltip = tooltip
 
-        setTimeout(this.removeTooltip, timeout)
+        setTimeout(()=>{
+            this.removeTooltip()
+            console.log("rm tooltip")
+        }, timeout)
     }
 
     draw(){

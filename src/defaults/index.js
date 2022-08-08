@@ -67,13 +67,13 @@ export const defaultLineChartGraph = {
 export const defaultBorder = {
     width: 1,
     lineType: 'solid',
-    color: '#e3e3e3',
+    color: '#ffc351',
     radius: 0
 }
 
 export const defaultTooltip = {
     width: "auto",
-    background: "#fff",
+    background: "#ffedbc",
     color: "#000",
     font: defaultFontStyle,
     border: defaultBorder,

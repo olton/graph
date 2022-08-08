@@ -76,8 +76,7 @@ let line = new LineChart([graph1], {
     },
     maxGraphSize: 26,
     tooltip: {
-        ...defaultTooltip,
-        timeout: 10000
+        ...defaultTooltip
     },
     onDrawValue: (x, y) => {
         return `(${Math.round(x)}, ${Math.round(y)})`
