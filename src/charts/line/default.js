@@ -60,8 +60,8 @@ export const defaultLineChartOptions = {
         ...defaultTooltip
     },
 
-    onTooltipShow: () => {},
-    onDrawValue: () => {},
-    onDrawLabelX: () => {},
-    onDrawLabelY: () => {},
+    onTooltipShow: (x, y) => `(${x}, ${y})`,
+    onDrawValue: (x, y) => `(${x}, ${y})`,
+    onDrawLabelX: (v) => {},
+    onDrawLabelY: (v) => {},
 }
