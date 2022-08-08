@@ -1,21 +1,14 @@
-import {debug} from "../helpers/debug.js";
 import {css, cssProp} from "../helpers/css.js";
 import {defaultGridStyle, drawGrid} from "../mixins/grid.js";
 import {
     defaultAxis,
-    drawAxis, ORIGIN_BOTTOM_CENTER, ORIGIN_BOTTOM_LEFT, ORIGIN_BOTTOM_RIGHT,
-    ORIGIN_CENTER_CENTER, ORIGIN_LEFT_CENTER, ORIGIN_RIGHT_CENTER,
-    ORIGIN_TOP_CENTER,
-    ORIGIN_TOP_LEFT,
-    ORIGIN_TOP_RIGHT
+    drawAxis
 } from "../mixins/axis.js";
 import {defaultCrossStyle, drawCross} from "../mixins/cross.js";
 import {merge} from "../helpers/merge.js";
 import {normPadding} from "../helpers/padding.js";
 import {defaultFontStyle, defaultTextStyle, TEXT_BOTTOM, TEXT_TOP} from "../defaults/index.js";
 import {text} from "../primitives/text.js";
-import {circle} from "../primitives/circle.js";
-import {drawZeroBoundaries} from "../mixins/boundaries.js";
 
 export const defaultChartOptions = {
     dpi: 1,
@@ -38,14 +31,7 @@ export const defaultChartOptions = {
         },
         ...defaultTextStyle,
     },
-    background: "#fff",
-    boundariesValues: {
-        zero: true,
-        minX: true,
-        maxX: true,
-        minY: true,
-        maxY: true
-    }
+    background: "#fff"
 }
 
 export class Chart {

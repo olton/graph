@@ -1,5 +1,5 @@
 import {Chart} from "../../src/index.js"
-import {LineChart} from "../../src/index.js"
+import {PointChart} from "../../src/index.js";
 import {
     ORIGIN_BOTTOM_CENTER,
     ORIGIN_CENTER_CENTER, ORIGIN_TOP_LEFT,
@@ -62,7 +62,7 @@ for(let t = 0; t <= Math.PI * 2; t+=.01) {
 }
 
 
-let line = new LineChart([rouse], {
+let line = new PointChart([rouse], {
     boundaries: {
         min: {
             x: -1,

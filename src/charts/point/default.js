@@ -1,12 +1,6 @@
-import {
-    defaultDotStyle,
-    defaultLineStyle,
-    defaultFontStyle,
-    defaultValueStyle,
-    defaultTooltip
-} from "../../defaults/index.js";
+import {defaultDotStyle, defaultLineStyle, defaultFontStyle, defaultValueStyle} from "../../defaults/index.js";
 
-export const defaultLineChartOptions = {
+export const defaultPointChartOptions = {
     graphs: [],
     boundaries: {
         min: {
@@ -56,12 +50,15 @@ export const defaultLineChartOptions = {
     values: {
         ...defaultValueStyle
     },
-    tooltip: {
-        ...defaultTooltip
-    },
-
-    onTooltipShow: () => {},
-    onDrawValue: () => {},
-    onDrawLabelX: () => {},
-    onDrawLabelY: () => {},
+    boundariesValues: {
+        style: {
+            ...defaultValueStyle
+        },
+        zeroPoint: false,
+        zero: false,
+        minX: false,
+        maxX: false,
+        minY: false,
+        maxY: false
+    }
 }

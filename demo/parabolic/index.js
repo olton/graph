@@ -1,5 +1,5 @@
 import {Chart} from "../../src/index.js"
-import {LineChart} from "../../src/index.js"
+import {PointChart} from "../../src/index.js";
 import {
     ORIGIN_CENTER_CENTER,
 } from "../../src/mixins/axis.js";
@@ -38,7 +38,7 @@ chartData.push(line1)
 
 console.log(line1)
 
-let line = new LineChart(chartData, {
+let line = new PointChart(chartData, {
     graphs: [
         {
             line: {

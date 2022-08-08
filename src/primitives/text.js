@@ -1,7 +1,9 @@
+import {textWidth} from "../helpers/text-width.js";
+
 export const text = (ctx, text, [x = 0, y = 0, w = 0], textStyle = {}) => {
     const {align = 'left', baseLine = 'middle', color = '#000', stroke = '#000', font = {}, angle = 0, translate = [0,0], dpi = 1} = textStyle
     const {style = 'normal', weight = 'normal', size = 12, lineHeight = 1, family = 'sans-serif'} = font
-    let textWidth = 0
+    let tw = 0
 
     let tX = 0, tY = 0
 
@@ -21,14 +23,10 @@ export const text = (ctx, text, [x = 0, y = 0, w = 0], textStyle = {}) => {
     ctx.rotate(angle * Math.PI / 180)
     ctx.textBaseline = baseLine
 
-    const lines = text.toString().split('\n')
-    for(let line of lines) {
-        const _w = ctx.measureText(text).width
-        if (_w > textWidth) textWidth = _w
-    }
+    tw = textWidth(ctx, text)
 
-    lines.map( (str, i) => {
-        ctx.fillText(str, x, y + (i * lineHeight * font.size), w || textWidth)
+    text.split("\n").map( (str, i) => {
+        ctx.fillText(str, x, y + (i * lineHeight * font.size), w || tw)
     })
 
     ctx.closePath()

@@ -51,5 +51,44 @@ export const defaultValueStyle = {
     },
     fixed: false,
     template: `[x, y]`,
-    show: true
+    show: true,
+    round: 'none' //round, ceil, floor, none
+}
+
+export const defaultLineChartGraph = {
+    dot: {
+        ...defaultDotStyle
+    },
+    line: {
+        ...defaultLineStyle
+    }
+}
+
+export const defaultBorder = {
+    width: 1,
+    lineType: 'solid',
+    color: '#e3e3e3',
+    radius: 0
+}
+
+export const defaultTooltip = {
+    width: "auto",
+    background: "#fff",
+    color: "#000",
+    font: defaultFontStyle,
+    border: defaultBorder,
+    padding: {
+        top: 10,
+        bottom: 10,
+        left: 10,
+        right: 10
+    },
+    shadow: {
+        shiftX: 2,
+        shiftY: 2,
+        blur: 4,
+        stretch: 0,
+        color: 'rgba(0,0,0,.5)'
+    },
+    timeout: 3000,
 }

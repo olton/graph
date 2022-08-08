@@ -1,17 +1,17 @@
-import {Chart, LineChart} from "../../src/index.js";
+import {Chart, PointChart} from "../../src/index.js";
 import {ORIGIN_TOP_RIGHT} from "../../src/mixins/axis.js";
+import {random} from "../../src/helpers/rand.js";
+
+globalThis.charts = [];
 
 (() => {
-    const rouse = []
-    // const a = 10
-    // for(let t = 0; t <= Math.PI * 2; t+=.01) {
-    //     const r = Math.sin(a * t)
-    //     const x = r * Math.cos(t)
-    //     const y = r * Math.sin(t)
-    //     rouse.push([x, y])
-    // }
+    const graph1 = []
 
-    const originsArray = ["center-center", "top-left", "top-center", "top-right", "bottom-left", "bottom-center", "bottom-right", "left-center", "right-center"]
+    for (let i = 0; i < 10; i++) {
+        graph1.push([random(-100, 100), random(-100, 100)])
+    }
+
+    const originsArray = ["center-center"/*, "top-left", "top-center", "top-right", "bottom-left", "bottom-center", "bottom-right", "left-center", "right-center"*/]
     const graphColor = {
         size: 1,
         color: "#ff0000"
@@ -29,6 +29,11 @@ import {ORIGIN_TOP_RIGHT} from "../../src/mixins/axis.js";
             dpi: 2,
             padding: "10",
             cross: false,
+            css: {
+                border: "1px solid #ddd",
+                width: "300px",
+                height: "300px"
+            },
             axis: {
                 origin: origin,
                 x: {
@@ -51,8 +56,11 @@ import {ORIGIN_TOP_RIGHT} from "../../src/mixins/axis.js";
                 }
             }
         })
+
+        globalThis.charts.push(chartCanvas)
+
         // continue
-        chartCanvas.add(new LineChart([], {
+        chartCanvas.add(new PointChart([graph1], {
             boundaries: {
                 min: {
                     x: -100,
@@ -63,19 +71,23 @@ import {ORIGIN_TOP_RIGHT} from "../../src/mixins/axis.js";
                     y: 100
                 }
             },
-            boundariesValues: {
-                zero: true,
-                zeroPoint: true
-            },
-            // values: false,
-            lines: true,
+            lines: false,
+            values: false,
             dot: {
-                ...graphColor
+                ...graphColor,
+                color: "red",
+                size: 4
             },
             line: {
                 ...graphColor,
                 type: "line"
-            }
+            },
+            maxGraphSize: 10
         }))
     }
 })()
+
+globalThis.addPoint = () => {
+    const graph = globalThis.charts[0].charts[0]
+    graph.add(0, [random(-100, 100), random(-100, 100)])
+}
