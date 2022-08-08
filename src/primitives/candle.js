@@ -1,4 +1,4 @@
-export const candle = (ctx, [x, y, h, by, bw, bh, leg = false], style = {}) => {
+export const drawCandle = (ctx, [x, y, h, by, bw, bh, leg = false], style = {}) => {
     const {color = 'red', size = 1, dash = []} = style
 
     ctx.beginPath()

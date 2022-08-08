@@ -1,6 +1,6 @@
 import {textWidth} from "../helpers/text-width.js";
 
-export const text = (ctx, text, [x = 0, y = 0, w = 0], textStyle = {}) => {
+export const drawText = (ctx, text, [x = 0, y = 0, w = 0], textStyle = {}) => {
     const {align = 'left', baseLine = 'middle', color = '#000', stroke = '#000', font = {}, angle = 0, translate = [0,0], dpi = 1} = textStyle
     const {style = 'normal', weight = 'normal', size = 12, lineHeight = 1, family = 'sans-serif'} = font
     let tw = 0

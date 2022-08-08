@@ -8,7 +8,7 @@
  * @param ea EndAngle in Radians
  * @param {Object} style
  */
-export const arc = (ctx, [x, y, r = 10, sa = 0, ea = 2 * Math.PI], style = {}) => {
+export const drawArc = (ctx, [x, y, r = 10, sa = 0, ea = 2 * Math.PI], style = {}) => {
     const {fill = '#000', color = '#000', size = 1, dash = []} = style
 
     ctx.beginPath()

@@ -12,7 +12,7 @@ const chart = new Chart("#chart1", {
         height: "700px"
     },
     axis: {
-        origin: ORIGIN_TOP_RIGHT,
+        origin: ORIGIN_BOTTOM_RIGHT,
     },
     cross: {
     },
@@ -33,13 +33,13 @@ for(let x = 0; x <= 25; x++) {
     graph1.push([x * 4, Math.round(random(0, 100))])
 }
 
-console.log(graph1)
+// console.log(graph1)
 
 let line = new LineChart([graph1], {
     graphs: [
         {
             line: {
-                type: "curve",
+                type: "line",
                 size: 2,
                 color: "red"
             },
@@ -64,7 +64,9 @@ let line = new LineChart([graph1], {
     lines: true,
     origin: true,
     line: {
-        color: "red"
+        type: "line",
+        color: "red",
+        fill: "rgba(255, 0, 0, .2)"
     },
     values: {
         show: true,
@@ -83,7 +85,7 @@ let line = new LineChart([graph1], {
     }
 })
 
-chart.add(line)
+chart.addChart(line)
 //
 // let index = 100
 // const interval = setInterval(()=>{

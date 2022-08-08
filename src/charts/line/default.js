@@ -3,7 +3,9 @@ import {
     defaultLineStyle,
     defaultFontStyle,
     defaultValueStyle,
-    defaultTooltip
+    defaultTooltip,
+    defaultLabelStyleX,
+    defaultLabelStyleY
 } from "../../defaults/index.js";
 
 export const defaultLineChartOptions = {
@@ -29,7 +31,8 @@ export const defaultLineChartOptions = {
         ...defaultDotStyle
     },
     line: {
-        ...defaultLineStyle
+        ...defaultLineStyle,
+        fill: "transparent"
     },
     font: {
         ...defaultFontStyle
@@ -47,10 +50,10 @@ export const defaultLineChartOptions = {
     },
     labels: {
         x: {
-
+            ...defaultLabelStyleX
         },
         y: {
-
+            ...defaultLabelStyleY
         }
     },
     values: {

@@ -1,12 +1,12 @@
 import {merge} from "../../helpers/merge.js";
-import {line} from "../../primitives/line.js";
-import {curve} from "../../primitives/curve.js";
-import {circle} from "../../primitives/circle.js";
-import {square} from "../../primitives/square.js";
-import {triangle} from "../../primitives/triangle.js";
-import {diamond} from "../../primitives/diamond.js";
-import {dot} from "../../primitives/dot.js";
-import {text} from "../../primitives/text.js";
+import {drawLine} from "../../primitives/line.js";
+import {drawCurve} from "../../primitives/curve.js";
+import {drawCircle} from "../../primitives/circle.js";
+import {drawSquare} from "../../primitives/square.js";
+import {drawTriangle} from "../../primitives/triangle.js";
+import {drawDiamond} from "../../primitives/diamond.js";
+import {drawDot} from "../../primitives/dot.js";
+import {drawText} from "../../primitives/text.js";
 import {defaultPointChartOptions} from "./default.js";
 import {
     toOrigin
@@ -21,16 +21,16 @@ import {
 import {randomColor} from "../../helpers/random-color.js";
 
 const dotFunc = {
-    circle,
-    square,
-    triangle,
-    diamond,
-    dot
+    drawCircle,
+    drawSquare,
+    drawTriangle,
+    drawDiamond,
+    drawDot
 }
 
 const lineFunc = {
-    line,
-    curve
+    drawLine,
+    drawCurve
 }
 
 export class PointChart {

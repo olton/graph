@@ -1,4 +1,4 @@
-export const square = (ctx, [x, y, r], style = {}) => {
+export const drawSquare = (ctx, [x, y, r], style = {}) => {
     const {color = '#000', fill = '#fff', size = 1, dash = []} = style
 
     ctx.beginPath()

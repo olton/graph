@@ -83,7 +83,7 @@ let line = new PointChart([rouse], {
     }
 })
 
-chart1.add(line)
+chart1.addChart(line)
 
 const ch = document.querySelector("#chart")
 ch.addEventListener("click", ()=>{

@@ -1,4 +1,4 @@
-export const triangle = (ctx, [x, y, r], style = {}) => {
+export const drawTriangle = (ctx, [x, y, r], style = {}) => {
     const {color = '#000', fill = '#fff', size = 1} = style
 
     ctx.beginPath()

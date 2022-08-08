@@ -1,4 +1,4 @@
-export const area = (ctx, coords = [], style = {}) => {
+export const drawArea = (ctx, coords = [], style = {}) => {
     const {color = '#000', fill = '#000', size = 1, dash = []} = style
     
     ctx.beginPath()

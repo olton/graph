@@ -1,6 +1,6 @@
 import {merge} from "../helpers/merge.js"
-import {vector} from "../primitives/vector.js"
-import {defaultFontStyle, defaultLineStyle, defaultTextStyle} from "../defaults/index.js";
+import {drawVector} from "../primitives/vector.js"
+import {defaultLineStyle} from "../defaults/index.js";
 
 export const ORIGIN_TOP_LEFT = "top-left" //+
 export const ORIGIN_TOP_RIGHT = "top-right" //+
@@ -11,21 +11,6 @@ export const ORIGIN_BOTTOM_CENTER = "bottom-center" //+
 export const ORIGIN_CENTER_CENTER = "center-center" //+
 export const ORIGIN_LEFT_CENTER = "left-center" //+
 export const ORIGIN_RIGHT_CENTER = "right-center" //+
-
-export const defaultAxisLabelStyle = {
-    ...defaultTextStyle,
-    font: {
-        ...defaultFontStyle
-    },
-    count: 5,
-    fixed: false,
-    opposite: false,
-    skip: 0,
-    showLine: true,
-    showLabel: true,
-    showMin: true,
-    step: "auto"
-}
 
 const factor = {
     factor: 10,
@@ -59,59 +44,59 @@ export function drawAxis (ctx, options = {}) {
     let x, y, x2, y2, zero = {x: 0, y: 0}
 
     const arrowLeft = (x, y) => {
-        vector(ctx,{x, y},{x: x + styleX.factor, y: y - styleX.factor / styleX.subFactor}, styleX)
-        vector(ctx,{x, y},{x: x + styleX.factor, y: y + styleX.factor / styleX.subFactor}, styleX)
+        drawVector(ctx,{x, y},{x: x + styleX.factor, y: y - styleX.factor / styleX.subFactor}, styleX)
+        drawVector(ctx,{x, y},{x: x + styleX.factor, y: y + styleX.factor / styleX.subFactor}, styleX)
     }
 
     const arrowRight = (x, y) => {
-        vector(ctx,{x, y},{x: x - styleX.factor, y: y - styleX.factor / styleX.subFactor}, styleX)
-        vector(ctx,{x, y},{x: x - styleX.factor, y: y + styleX.factor / styleX.subFactor}, styleX)
+        drawVector(ctx,{x, y},{x: x - styleX.factor, y: y - styleX.factor / styleX.subFactor}, styleX)
+        drawVector(ctx,{x, y},{x: x - styleX.factor, y: y + styleX.factor / styleX.subFactor}, styleX)
     }
 
     const arrowUp = (x, y) => {
-        vector(ctx, {x, y}, {x: x - styleY.factor / styleY.subFactor, y: y + styleY.factor}, styleY)
-        vector(ctx, {x, y}, {x: x + styleY.factor / styleY.subFactor, y: y + styleY.factor}, styleY)
+        drawVector(ctx, {x, y}, {x: x - styleY.factor / styleY.subFactor, y: y + styleY.factor}, styleY)
+        drawVector(ctx, {x, y}, {x: x + styleY.factor / styleY.subFactor, y: y + styleY.factor}, styleY)
     }
 
     const arrowDown = (x, y) => {
-        vector(ctx, {x, y}, {x: x - styleY.factor / styleY.subFactor, y: y - styleY.factor}, styleY)
-        vector(ctx, {x, y}, {x: x + styleY.factor / styleY.subFactor, y: y - styleY.factor}, styleY)
+        drawVector(ctx, {x, y}, {x: x - styleY.factor / styleY.subFactor, y: y - styleY.factor}, styleY)
+        drawVector(ctx, {x, y}, {x: x + styleY.factor / styleY.subFactor, y: y - styleY.factor}, styleY)
     }
 
     const axisHorizontalCenter = () => {
         x = padding.left; x2 = width - padding.right
         y = padding.top + (height - (padding.top + padding.bottom) - styleX.size) / 2; y2 = y
-        vector(ctx,{x, y},{x: x2, y: y2}, styleX)
+        drawVector(ctx,{x, y},{x: x2, y: y2}, styleX)
     }
 
     const axisVerticalCenter = () => {
         x = padding.left + (width - (padding.left + padding.right) - styleY.size) / 2; x2 = x
         y = padding.top; y2 = height - padding.bottom
-        vector(ctx,{x, y},{x: x2, y: y2}, styleY)
+        drawVector(ctx,{x, y},{x: x2, y: y2}, styleY)
     }
 
     const axisHorizontalBottom = () => {
         x = padding.left; x2 = width - padding.right
         y = height - padding.bottom - styleX.size; y2 = y
-        vector(ctx,{x, y},{x: x2, y: y2}, styleX)
+        drawVector(ctx,{x, y},{x: x2, y: y2}, styleX)
     }
 
     const axisHorizontalTop = () => {
         x = padding.left; x2 = width - padding.right
         y = padding.top + styleX.size; y2 = y
-        vector(ctx,{x, y},{x: x2, y: y2}, styleX)
+        drawVector(ctx,{x, y},{x: x2, y: y2}, styleX)
     }
 
     const axisVerticalLeft = () => {
         x = padding.left + styleY.size
         y = padding.top; y2 = height - padding.bottom
-        vector(ctx,{x, y},{x, y: y2}, styleY)
+        drawVector(ctx,{x, y},{x, y: y2}, styleY)
     }
 
     const axisVerticalRight = () => {
         x = width - (padding.right + styleY.size)
         y = padding.top; y2 = height - padding.bottom
-        vector(ctx,{x, y},{x, y: y2}, styleY)
+        drawVector(ctx,{x, y},{x, y: y2}, styleY)
     }
 
     if (origin === ORIGIN_CENTER_CENTER) {

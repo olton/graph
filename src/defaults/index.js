@@ -40,7 +40,6 @@ export const defaultTextStyle = {
     color: "#000",
     angle: 0,
     align: TEXT_ALIGN_LEFT,
-    position: null,
     translate: [0,0]
 }
 
@@ -90,5 +89,29 @@ export const defaultTooltip = {
         stretch: 0,
         color: 'rgba(0,0,0,.5)'
     },
-    timeout: 3000,
+    timeout: 5000,
+}
+
+export const defaultLabelStyle = {
+    ...defaultTextStyle,
+    font: {
+        ...defaultFontStyle
+    },
+    count: 5,
+    fixed: false,
+    opposite: false,
+    skip: 0,
+    showLine: true,
+    showLabel: true,
+    showMin: true,
+    step: "auto"
+}
+
+export const defaultLabelStyleX = {
+    ...defaultLabelStyle,
+    angle: 45
+}
+
+export const defaultLabelStyleY = {
+    ...defaultLabelStyle
 }

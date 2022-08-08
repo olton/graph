@@ -8,7 +8,7 @@ import {defaultCrossStyle, drawCross} from "../mixins/cross.js";
 import {merge} from "../helpers/merge.js";
 import {normPadding} from "../helpers/padding.js";
 import {defaultFontStyle, defaultTextStyle, TEXT_BOTTOM, TEXT_TOP} from "../defaults/index.js";
-import {text} from "../primitives/text.js";
+import {drawText} from "../primitives/text.js";
 
 export const defaultChartOptions = {
     dpi: 1,
@@ -149,7 +149,7 @@ export class Chart {
     }
 
     title(){
-        const {text: titleText, position, font, style} = this.options.title
+        const {text, position, font, style} = this.options.title
         let x = 0, y = 0, w = 0
 
         if (!text) return
@@ -165,7 +165,7 @@ export class Chart {
             case TEXT_TOP   : x = (this.viewWidth - textWidth)/2; y = font.size; w = this.viewWidth - this.padding.left - this.padding.right; break;
         }
 
-        text(this.ctx, titleText, [x, y, w], this.options.title)
+        drawText(this.ctx, text, [x, y, w], this.options.title)
     }
 
     draw(){
@@ -187,7 +187,7 @@ export class Chart {
         this.draw()
     }
 
-    add(){
+    addChart(){
         const charts = [...arguments]
 
         for(let chart of charts) {
@@ -197,6 +197,10 @@ export class Chart {
                 chart.draw()
             }
         }
+    }
+
+    addText(text, [x, y], style){
+        text(this.ctx, text, [x, y])
     }
 
     mouseMove(e){

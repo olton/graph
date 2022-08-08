@@ -1,4 +1,4 @@
-export const line = (ctx, coords = [], style = {}) => {
+export const drawLine = (ctx, coords = [], style = {}) => {
     const {color = '#000', size = 1, dash = []} = style
 
     ctx.beginPath()

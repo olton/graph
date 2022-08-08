@@ -60,7 +60,7 @@ globalThis.charts = [];
         globalThis.charts.push(chartCanvas)
 
         // continue
-        chartCanvas.add(new PointChart([graph1], {
+        chartCanvas.addChart(new PointChart([graph1], {
             boundaries: {
                 min: {
                     x: -100,
@@ -80,7 +80,7 @@ globalThis.charts = [];
             },
             line: {
                 ...graphColor,
-                type: "line"
+                type: "line",
             },
             maxGraphSize: 10
         }))

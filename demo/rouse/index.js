@@ -73,5 +73,5 @@ let line = new PointChart([rouse], {
     }
 })
 
-chart1.add(line)
+chart1.addChart(line)
 

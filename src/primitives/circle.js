@@ -1,4 +1,4 @@
-import {dot} from "./dot.js";
-import {arc} from "./arc.js";
+import {drawDot} from "./dot.js";
+import {drawArc} from "./arc.js";
 
-export const circle = (ctx, [x, y, r], style) => arc(ctx, [x, y, r, 0, 2 * Math.PI], style)
+export const drawCircle = (ctx, [x, y, r], style) => drawArc(ctx, [x, y, r, 0, 2 * Math.PI], style)

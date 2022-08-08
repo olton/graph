@@ -1,5 +1,5 @@
 import {merge} from "../helpers/merge.js";
-import {vector} from "../primitives/vector.js";
+import {drawVector} from "../primitives/vector.js";
 
 export const defaultGridLineStyle = {
     color: "#e7e7e7",
@@ -31,7 +31,7 @@ export function drawGrid (ctx, options = {}) {
     y = padding.top
     c = 0
     do  {
-        vector(ctx, {x, y}, {x: width - padding.right, y}, h)
+        drawVector(ctx, {x, y}, {x: width - padding.right, y}, h)
         y += stepY
         c++
     } while (c <= h.count)
@@ -40,7 +40,7 @@ export function drawGrid (ctx, options = {}) {
     y = padding.top
     c = 0
     do {
-        vector(ctx, {x, y}, {x, y: height - padding.bottom}, v)
+        drawVector(ctx, {x, y}, {x, y: height - padding.bottom}, v)
         x += stepX
         c++
     } while (c <= v.count)

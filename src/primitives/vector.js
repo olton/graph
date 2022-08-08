@@ -1,4 +1,4 @@
-export const vector = (ctx, from, to, style = {}) => {
+export const drawVector = (ctx, from, to, style = {}) => {
     const {color = '#000', size = 1, dash = []} = style
 
     ctx.beginPath()

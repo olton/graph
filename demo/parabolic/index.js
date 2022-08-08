@@ -69,5 +69,5 @@ let line = new PointChart(chartData, {
     maxGraphSize: 50
 })
 
-chart1.add(line)
+chart1.addChart(line)
 

@@ -1,6 +1,6 @@
 import {isObject} from "../helpers/is-object.js";
 
-export const roundedRect = (ctx, [x, y, width, height, radius = 0], style = {}) => {
+export const drawRoundedRect = (ctx, [x, y, width, height, radius = 0], style = {}) => {
     const {color = '#000', fill = '#fff', size = 1, dash = []} = style
 
     if (typeof radius === 'number') {

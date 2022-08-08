@@ -1,4 +1,4 @@
-export const box = (ctx, [x, y, w, h], style = {}) => {
+export const drawBox = (ctx, [x, y, w, h], style = {}) => {
     const {color = '#fff', borderColor = '#000', dash = [], size = 1} = style
 
     ctx.save()

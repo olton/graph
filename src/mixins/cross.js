@@ -1,10 +1,10 @@
-import {line} from "../primitives/line.js"
+import {drawLine} from "../primitives/line.js"
+import {drawDot} from "../primitives/dot.js";
+import {drawVector} from "../primitives/vector.js";
+import {drawCircle} from "../primitives/circle.js";
+import {drawSquare} from "../primitives/square.js";
+import {drawDiamond} from "../primitives/diamond.js";
 import {merge} from "../helpers/merge.js";
-import {dot} from "../primitives/dot.js";
-import {vector} from "../primitives/vector.js";
-import {circle} from "../primitives/circle.js";
-import {square} from "../primitives/square.js";
-import {diamond} from "../primitives/diamond.js";
 
 export const defaultCrossLineStyle = {
     size: 1,
@@ -31,9 +31,9 @@ export const defaultCrossStyle = {
 }
 
 const arcFunc = {
-    diamond,
-    circle,
-    square
+    drawDiamond,
+    drawCircle,
+    drawSquare
 }
 
 export function drawCross(ctx, options = {}){

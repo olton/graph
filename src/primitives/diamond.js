@@ -1,4 +1,4 @@
-export const diamond = (ctx, [x, y, r], style = {}) => {
+export const drawDiamond = (ctx, [x, y, r], style = {}) => {
     const {color = '#000', fill = '#fff', size = 1, dash = []} = style
 
     ctx.beginPath()

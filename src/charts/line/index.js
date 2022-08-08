@@ -1,10 +1,12 @@
-import {circle} from "../../primitives/circle.js";
-import {square} from "../../primitives/square.js";
-import {triangle} from "../../primitives/triangle.js";
-import {diamond} from "../../primitives/diamond.js";
-import {dot} from "../../primitives/dot.js";
-import {line} from "../../primitives/line.js";
-import {curve} from "../../primitives/curve.js";
+import {drawCircle} from "../../primitives/circle.js";
+import {drawSquare} from "../../primitives/square.js";
+import {drawTriangle} from "../../primitives/triangle.js";
+import {drawDiamond} from "../../primitives/diamond.js";
+import {drawDot} from "../../primitives/dot.js";
+import {drawLine} from "../../primitives/line.js";
+import {drawCurve} from "../../primitives/curve.js";
+import {drawArea} from "../../primitives/area.js";
+import {drawText} from "../../primitives/text.js";
 import {merge} from "../../helpers/merge.js";
 import {defaultLineChartOptions} from "./default.js";
 import {defaultDotStyle, defaultLineStyle} from "../../defaults/index.js";
@@ -13,25 +15,24 @@ import {
     ORIGIN_BOTTOM_LEFT,
     ORIGIN_BOTTOM_RIGHT,
     ORIGIN_TOP_LEFT,
-    ORIGIN_TOP_RIGHT,
-    toOrigin
+    ORIGIN_TOP_RIGHT
 } from "../../mixins/axis.js";
 import {randomColor} from "../../helpers/random-color.js";
-import {text} from "../../primitives/text.js";
 import {textWidth} from "../../helpers/text-width.js";
 import {normPadding} from "../../helpers/padding.js";
+import {capitalize} from "../../helpers/capitalize.js";
 
 const dotFunc = {
-    circle,
-    square,
-    triangle,
-    diamond,
-    dot
+    drawCircle,
+    drawSquare,
+    drawTriangle,
+    drawDiamond,
+    drawDot
 }
 
 const lineFunc = {
-    line,
-    curve
+    drawLine,
+    drawCurve
 }
 
 export class LineChart {
@@ -45,13 +46,15 @@ export class LineChart {
 
         const that = this
 
+        const o = this.options
+
         this.data.forEach((data, index) => {
-            if (that.options.graphs[index]) {
-                const dot = merge({}, defaultDotStyle, that.options.dot, that.options.graphs[index].dot)
-                const line = merge({}, defaultLineStyle, that.options.line, that.options.graphs[index].line)
+            if (o.graphs[index]) {
+                const dot = merge({}, defaultDotStyle, o.dot, o.graphs[index].dot)
+                const line = merge({}, defaultLineStyle, o.line, o.graphs[index].line)
                 that.graphs.push(merge({}, defaultLineChartGraph, {dot, line}))
             } else {
-                that.graphs.push(merge({}, defaultLineChartGraph, {dot: that.options.dot, line: that.options.line}))
+                that.graphs.push(merge({}, defaultLineChartGraph, {dot: o.dot, line: o.line}))
             }
         })
 
@@ -190,8 +193,19 @@ export class LineChart {
                 }
             }
 
+            if (o.line.fill && o.line.fill !== "transparent") {
+                let areaCoords = []
+                let lastX = include[include.length-1][0]
+
+                areaCoords.push([zx, zy,0,0])
+                areaCoords = areaCoords.concat(include)
+                areaCoords.push([lastX, zy, 0, 0])
+
+                drawArea(ctx, areaCoords, lineStyle)
+            }
+
             if (o.lines) {
-                lineFunc[lineStyle.type](ctx, include, lineStyle)
+                lineFunc[`draw${capitalize(lineStyle.type)}`](ctx, include, lineStyle)
             }
 
             if (o.dots) {
@@ -200,7 +214,8 @@ export class LineChart {
                     // Draw point
                     if (dotStyle.color === 'random') { dotStyle.color = randomColor() }
                     if (dotStyle.fill === 'random') { dotStyle.fill = randomColor() }
-                    dotFunc[dotStyle.type](ctx, [_x, _y, dotStyle.size], dotStyle)
+
+                    dotFunc[`draw${capitalize(dotStyle.type)}`](ctx, [_x, _y, dotStyle.size], dotStyle)
 
                     // Draw value
                     if (o.values && o.values.show) {
@@ -212,7 +227,7 @@ export class LineChart {
                         }
                         tw = textWidth(this.ctx, val)
                         th = val.split("\n").length * o.values.font.size
-                        text(ctx, `${val}`, [_x - tw + o.values.translate[0] * dpi, _y - th + o.values.translate[1] * dpi, 0], o.values)
+                        drawText(ctx, `${val}`, [_x - tw + o.values.translate[0] * dpi, _y - th + o.values.translate[1] * dpi, 0], o.values)
                     }
                 }
             }
@@ -228,6 +243,7 @@ export class LineChart {
         const ctx = this.ctx
         const rect = this.canvas.getBoundingClientRect()
         const accuracy = 10
+        let tooltip = false
 
         if (!this.data || !this.data.length) return
         if (!this.proxy.mouse) return
@@ -248,16 +264,18 @@ export class LineChart {
                 const ly = py - accuracy, ry = py + accuracy
 
                 if ((mx > lx && mx < rx) && (my > ly && my < ry)) {
-                    circle(ctx, [px, py, 10], this.graphs[index].dot)
+                    drawCircle(ctx, [px, py, 10], this.graphs[index].dot)
                 }
 
                 if ((mx > lx && mx < rx) && (my > ly && my < ry)) {
                     this.showTooltip(ctx, [_mx, _my], [x, y], this.graphs[index].dot)
-                } else {
-                    // this.removeTooltip()
+                    tooltip = true
                 }
             }
             index++
+        }
+        if (!tooltip && this.tooltip) {
+            this.removeTooltip()
         }
     }
 
@@ -276,7 +294,6 @@ export class LineChart {
         if (!this.data || !this.data.length) return
 
         let {font, shadow, border, padding, timeout} = o.tooltip
-        const onShow = o.onTooltipShow
 
         padding = normPadding(padding)
 
@@ -290,7 +307,7 @@ export class LineChart {
         tooltip.style.font = `${font.style} ${font.weight} ${font.size}px/${font.lineHeight} ${font.family}`
         tooltip.style.boxShadow = `${shadow.shiftX}px ${shadow.shiftY}px ${shadow.blur}px ${shadow.color}`
 
-        tooltip.innerHTML = `(${x}, ${y})`
+        tooltip.innerHTML = o.onTooltipShow.apply(this, [x, y])
 
         document.querySelector('body').appendChild(tooltip)
 
@@ -301,7 +318,6 @@ export class LineChart {
 
         setTimeout(()=>{
             this.removeTooltip()
-            console.log("rm tooltip")
         }, timeout)
     }
 
