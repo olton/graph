@@ -1,7 +1,8 @@
 import {merge} from "../../helpers/merge.js";
 import {drawText} from "../../primitives/text.js";
-import {textWidth} from "../../helpers/text-width.js";
 import {defaultTextChartOptions} from "./default.js";
+import {getTextBoundingRect, textWidth} from "../../helpers/text.js";
+import {BOTTOM_CENTER, BOTTOM_LEFT, BOTTOM_RIGHT, TOP_CENTER, TOP_LEFT, TOP_RIGHT} from "../../defaults/index.js";
 
 export class TextChart {
     constructor(text, [x, y], options) {
@@ -33,52 +34,45 @@ export class TextChart {
         const o = this.options
         let x, y, w
         switch (o.position) {
-            case 'top-left': {
+            case TOP_LEFT: {
                 x = 0
                 y = this.options.font.size
                 break
             }
-            case 'top-center': {
+            case TOP_CENTER: {
                 x = this.fullWidth/2
                 y = this.options.font.size
                 this.options.align = 'center'
                 break
             }
-            case 'top-right': {
+            case TOP_RIGHT: {
                 x = this.fullWidth
                 y = this.options.font.size
                 this.options.align = 'right'
                 break
             }
-            case 'bottom-left': {
+            case BOTTOM_LEFT: {
                 x = 0
                 y = this.fullHeight - this.h
                 break
             }
-            case 'bottom-center': {
+            case BOTTOM_CENTER: {
                 x = this.fullWidth/2
                 y = this.fullHeight - this.h
                 this.options.align = 'center'
                 break
             }
-            case 'bottom-right': {
+            case BOTTOM_RIGHT: {
                 x = this.fullWidth
                 y = this.fullHeight - this.h
                 this.options.align = 'right'
-                break
-            }
-            case 'v-left-bottom': {
-                x = 100
-                y = 100
-                this.options.angle = -90
-                this.options.translate = [0 - this.h - 55, this.fullHeight + 95]
                 break
             }
             default: {
                 [x, y] = [this.x, this.y]
             }
         }
-        console.log(this.options, [x, y, this.w])
+
         drawText(this.ctx, this.text,[x, y, this.w], this.options)
     }
 }

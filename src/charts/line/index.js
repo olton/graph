@@ -18,7 +18,7 @@ import {
     ORIGIN_TOP_RIGHT
 } from "../../mixins/axis.js";
 import {randomColor} from "../../helpers/random-color.js";
-import {textWidth} from "../../helpers/text-width.js";
+import {textWidth} from "../../helpers/text.js";
 import {normPadding} from "../../helpers/padding.js";
 import {capitalize} from "../../helpers/capitalize.js";
 

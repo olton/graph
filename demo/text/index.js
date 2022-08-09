@@ -45,7 +45,7 @@ const text = new TextChart(
     [0, 10],
     {
         ...defaultTextStyle,
-        position: 'v-left-bottom',
+        position: 'v-top-left',
         font: {
             size: 24
         }

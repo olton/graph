@@ -12,6 +12,12 @@ export const TEXT_TOP = 'text-top'
 export const TEXT_BOTTOM = 'text-bottom'
 export const TEXT_RIGHT = 'text-right'
 export const TEXT_LEFT = 'text-left'
+export const TOP_LEFT = 'top-left'
+export const TOP_CENTER = 'top-center'
+export const TOP_RIGHT = 'top-right'
+export const BOTTOM_LEFT = 'bottom-left'
+export const BOTTOM_CENTER = 'bottom-center'
+export const BOTTOM_RIGHT = 'bottom-right'
 
 export const defaultDotStyle = {
     type: DOT_TYPE_DOT,

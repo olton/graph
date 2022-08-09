@@ -9,7 +9,6 @@ import {merge} from "../helpers/merge.js";
 import {normPadding} from "../helpers/padding.js";
 import {defaultFontStyle, defaultTextStyle, TEXT_BOTTOM, TEXT_TOP} from "../defaults/index.js";
 import {drawText} from "../primitives/text.js";
-import {textWidth} from "../helpers/text-width.js";
 
 export const defaultChartOptions = {
     dpi: 1,
@@ -133,6 +132,7 @@ export class Chart {
         this.container.innerHTML = ""
         this.container.appendChild(this.canvas)
         this.ctx = this.canvas.getContext('2d')
+        this.ctx.dpi = this.dpi
     }
 
     setCanvasSize(){
