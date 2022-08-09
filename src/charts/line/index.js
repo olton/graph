@@ -332,8 +332,6 @@ export class LineChart {
     drawLabelX(){
         const o = this.options
         const labelStyle = o.labels.x
-        const lFactor = 10 ** ((""+this.maxX).length - 2)
-        const lMax = ceil(this.maxX, lFactor)
         let labelStep = 0
 
         if (labelStyle.step === 'auto') {
@@ -357,7 +355,7 @@ export class LineChart {
                 const val = o.onDrawLabelX(v)
                 const valWidth = textWidth(this.ctx, val)
                 const valHeight = textHeight(this.ctx, val)
-                drawText(this.ctx, `${val}`, [x - valWidth / 2, y + valHeight + 10, 0], labelStyle.text)
+                drawText(this.ctx, `${val}`, [x - valWidth / 2, y + valHeight + labelStyle.text.font.size/2, 0], labelStyle.text)
             }
         }
 
@@ -379,7 +377,7 @@ export class LineChart {
             for (let i = 0; i <= labelStyle.count; i++) {
                 _drawLine(i, x, ly)
                 _drawReferencePoint(x, vy)
-                _drawLabelValue(o.onDrawLabelX(x / this.ratioX), x, vy)
+                _drawLabelValue(o.onDrawLabelX((x - this.padding.left) / this.ratioX), x, vy)
 
                 labelValue += labelStep
                 x = this.padding.left + (labelValue - this.minX) * this.ratioX
@@ -399,10 +397,77 @@ export class LineChart {
         }
     }
 
-    drawLabelY(){}
+    drawLabelY(){
+        const o = this.options
+        const labelStyle = o.labels.x
+        let labelStep = 0
+
+        if (labelStyle.step === 'auto') {
+            if (labelStyle.count) {
+                labelStep = (this.maxX - this.minX) / labelStyle.count
+            }
+        } else {
+            labelStep = labelStyle.step
+        }
+
+        if (!labelStep) return
+
+        const _drawReferencePoint = (x, y) => {
+            if (labelStyle.line && labelStyle.referencePoint) {
+                drawDot(this.ctx, [x, y, 4], labelStyle.line)
+            }
+        }
+
+        const _drawLabelValue = (v, x, y) => {
+            if (labelStyle.showValue) {
+                const val = o.onDrawLabelY(v)
+                const valWidth = textWidth(this.ctx, val)
+                const valHeight = textHeight(this.ctx, val)
+                drawText(this.ctx, `${val}`, [x - valWidth - labelStyle.text.font.size/2, y, 0], labelStyle.text)
+            }
+        }
+
+        const _drawLine = (i, x, y) => {
+            if (labelStyle.line) {
+                if (i === 0 && labelStyle.skipFirst || i === labelStyle.count && labelStyle.skipLast) {
+                } else {
+                    const from = {x, y}
+                    const to = {x: x + this.width, y}
+                    drawVector(this.ctx, from, to, labelStyle.line) // line
+                }
+            }
+        }
+
+        if (labelStyle.step === 'auto') {
+            let labelValue = this.minY
+            let x = this.padding.left, vy = this.padding.top + this.height, lx = this.padding.left + this.width
+
+            for (let i = 0; i <= labelStyle.count; i++) {
+                _drawLine(i, x, vy)
+                _drawReferencePoint(x, vy)
+                _drawLabelValue(o.onDrawLabelX(this.maxY - (vy - this.padding.top) / this.ratioX), x, vy)
+
+                labelValue += labelStep
+                vy = (this.padding.top + this.height) - (labelValue - this.minY) * this.ratioY
+            }
+        } else {
+            let x = this.padding.left, vy = this.padding.top + this.height, ly = this.padding.top
+
+            let i = 0
+            while (i <= this.maxX) {
+                _drawLine(i, x, ly)
+                _drawReferencePoint(x, vy)
+                _drawLabelValue(o.onDrawLabelX(i), x, vy)
+
+                i += labelStep
+                x = this.padding.left + i * this.ratioX
+            }
+        }
+    }
 
     draw(){
         this.drawLabelX()
+        this.drawLabelY()
         this.drawGraph()
         this.drawTooltip()
     }

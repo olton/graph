@@ -88,11 +88,13 @@ let line = new LineChart([graph1], {
             text: {
                 font: {
                     size: 32
-                }
+                },
+                angle: 0
             },
-            step: 10,
-            // skipFirst: false,
-            // skipLast: false
+            step: "auto",
+        },
+        y: {
+            step: "auto"
         }
     },
     onDrawValue: (x, y) => {
