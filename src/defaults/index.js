@@ -110,7 +110,8 @@ export const defaultLabelStyle = {
     text: {
         ...defaultTextStyle,
         font: {
-            ...defaultFontStyle
+            ...defaultFontStyle,
+            size: 24
         },
     },
     referencePoint: true,

@@ -399,7 +399,7 @@ export class LineChart {
 
     drawLabelY(){
         const o = this.options
-        const labelStyle = o.labels.x
+        const labelStyle = o.labels.y
         let labelStep = 0
 
         if (labelStyle.step === 'auto') {
@@ -451,16 +451,17 @@ export class LineChart {
                 vy = (this.padding.top + this.height) - (labelValue - this.minY) * this.ratioY
             }
         } else {
-            let x = this.padding.left, vy = this.padding.top + this.height, ly = this.padding.top
+            ;
+            let x = this.padding.left, vy = this.padding.top + this.height, lx = this.padding.left + this.width
 
             let i = 0
-            while (i <= this.maxX) {
-                _drawLine(i, x, ly)
+            while (i <= this.maxY) {
+                _drawLine(i, x, vy)
                 _drawReferencePoint(x, vy)
                 _drawLabelValue(o.onDrawLabelX(i), x, vy)
 
                 i += labelStep
-                x = this.padding.left + i * this.ratioX
+                vy = (this.padding.top + this.height) - i * this.ratioX
             }
         }
     }

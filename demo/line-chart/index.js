@@ -86,9 +86,6 @@ let line = new LineChart([graph1], {
                 color: "red",
             },
             text: {
-                font: {
-                    size: 32
-                },
                 angle: 0
             },
             step: "auto",
