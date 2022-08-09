@@ -57,7 +57,10 @@ export const defaultValueStyle = {
     fixed: false,
     template: `[x, y]`,
     show: true,
-    round: 'none' //round, ceil, floor, none
+    shift: {
+        x: 0,
+        y: 0,
+    }
 }
 
 export const defaultLineChartGraph = {
@@ -99,18 +102,23 @@ export const defaultTooltip = {
 }
 
 export const defaultLabelStyle = {
-    ...defaultTextStyle,
-    font: {
-        ...defaultFontStyle
-    },
     count: 5,
-    fixed: false,
-    opposite: false,
+    step: "auto",
+    line: {
+        ...defaultLineStyle
+    },
+    text: {
+        ...defaultTextStyle,
+        font: {
+            ...defaultFontStyle
+        },
+    },
+    referencePoint: true,
+    skipFirst: true,
+    skipLast: true,
     skip: 0,
-    showLine: true,
-    showLabel: true,
-    showMin: true,
-    step: "auto"
+    showValue: true,
+    fixed: 0,
 }
 
 export const defaultLabelStyleX = {

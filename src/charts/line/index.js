@@ -18,9 +18,11 @@ import {
     ORIGIN_TOP_RIGHT
 } from "../../mixins/axis.js";
 import {randomColor} from "../../helpers/random-color.js";
-import {textWidth} from "../../helpers/text.js";
+import {textHeight, textWidth} from "../../helpers/text.js";
 import {normPadding} from "../../helpers/padding.js";
 import {capitalize} from "../../helpers/capitalize.js";
+import {ceil} from "../../helpers/round.js";
+import {drawVector} from "../../primitives/vector.js";
 
 const dotFunc = {
     drawCircle,
@@ -152,12 +154,33 @@ export class LineChart {
         this.chart.resize()
     }
 
+    #toOrigin(x, y){
+        const [zx, zy] = this.zero
+        let _x, _y
+        if (this.origin === ORIGIN_TOP_RIGHT) {
+            _x = zx - Math.round((x - this.minX) * this.ratioX)
+            _y = zy + Math.round((y - this.minY) * this.ratioY)
+        }
+        else if (this.origin === ORIGIN_TOP_LEFT) {
+            _x = Math.round((x - this.minX) * this.ratioX) + zx
+            _y = Math.round((y - this.minY) * this.ratioY) + zy
+        }
+        else if (this.origin === ORIGIN_BOTTOM_RIGHT) {
+            _x = zx - Math.round((x - this.minX) * this.ratioX)
+            _y = zy - Math.round((y - this.minY) * this.ratioY)
+        }
+        else if (this.origin === ORIGIN_BOTTOM_LEFT) {
+            _x = Math.round((x - this.minX) * this.ratioX) + zx
+            _y = zy - Math.round((y - this.minY) * this.ratioY)
+        }
+        return [_x, _y]
+    }
+
     drawGraph(){
         if (!this.data || !this.data.length) return
 
         const include = []
-        const ctx = this.chart.ctx
-        const dpi = this.chart.dpi
+        const ctx = this.ctx
         const o = this.options
         const [zx, zy] = this.zero
 
@@ -167,26 +190,11 @@ export class LineChart {
             const dotStyle = graphStyle.dot
             const lineStyle = graphStyle.line
 
+            if (!data.length) continue
+
             for(let i = 0; i < data.length; i++) {
                 let [x, y] = data[i]
-                let _x, _y
-
-                if (this.origin === ORIGIN_TOP_RIGHT) {
-                    _x = zx - Math.round((x - this.minX) * this.ratioX)
-                    _y = zy + Math.round((y - this.minY) * this.ratioY)
-                }
-                else if (this.origin === ORIGIN_TOP_LEFT) {
-                    _x = Math.round((x - this.minX) * this.ratioX) + zx
-                    _y = Math.round((y - this.minY) * this.ratioY) + zy
-                }
-                else if (this.origin === ORIGIN_BOTTOM_RIGHT) {
-                    _x = zx - Math.round((x - this.minX) * this.ratioX)
-                    _y = zy - Math.round((y - this.minY) * this.ratioY)
-                }
-                else if (this.origin === ORIGIN_BOTTOM_LEFT) {
-                    _x = Math.round((x - this.minX) * this.ratioX) + zx
-                    _y = zy - Math.round((y - this.minY) * this.ratioY)
-                }
+                let [_x, _y] = this.#toOrigin(x, y)
 
                 if (this.#inView(_x, _y)) {
                     include.push([_x, _y, x, y])
@@ -227,7 +235,7 @@ export class LineChart {
                         }
                         tw = textWidth(this.ctx, val)
                         th = val.split("\n").length * o.values.font.size
-                        drawText(ctx, `${val}`, [_x - tw + o.values.translate[0] * dpi, _y - th + o.values.translate[1] * dpi, 0], o.values)
+                        drawText(ctx, `${val}`, [_x - tw/2 + o.values.shift.x, _y - th + o.values.shift.y, 0], o.values)
                     }
                 }
             }
@@ -321,7 +329,80 @@ export class LineChart {
         }, timeout)
     }
 
+    drawLabelX(){
+        const o = this.options
+        const labelStyle = o.labels.x
+        const lFactor = 10 ** ((""+this.maxX).length - 2)
+        const lMax = ceil(this.maxX, lFactor)
+        let labelStep = 0
+
+        if (labelStyle.step === 'auto') {
+            if (labelStyle.count) {
+                labelStep = (this.maxX - this.minX) / labelStyle.count
+            }
+        } else {
+            labelStep = labelStyle.step
+        }
+
+        if (!labelStep) return
+
+        const _drawReferencePoint = (x, y) => {
+            if (labelStyle.line && labelStyle.referencePoint) {
+                drawDot(this.ctx, [x, y, 4], labelStyle.line)
+            }
+        }
+
+        const _drawLabelValue = (v, x, y) => {
+            if (labelStyle.showValue) {
+                const val = o.onDrawLabelX(v)
+                const valWidth = textWidth(this.ctx, val)
+                const valHeight = textHeight(this.ctx, val)
+                drawText(this.ctx, `${val}`, [x - valWidth / 2, y + valHeight + 10, 0], labelStyle.text)
+            }
+        }
+
+        const _drawLine = (i, x, y) => {
+            if (labelStyle.line) {
+                if (i === 0 && labelStyle.skipFirst || i === labelStyle.count && labelStyle.skipLast) {
+                } else {
+                    const from = {x, y}
+                    const to = {x, y: y + this.height}
+                    drawVector(this.ctx, from, to, labelStyle.line) // line
+                }
+            }
+        }
+
+        if (labelStyle.step === 'auto') {
+            let labelValue = this.minX
+            let x = this.padding.left, vy = this.padding.top + this.height, ly = this.padding.top
+
+            for (let i = 0; i <= labelStyle.count; i++) {
+                _drawLine(i, x, ly)
+                _drawReferencePoint(x, vy)
+                _drawLabelValue(o.onDrawLabelX(x / this.ratioX), x, vy)
+
+                labelValue += labelStep
+                x = this.padding.left + (labelValue - this.minX) * this.ratioX
+            }
+        } else {
+            let x = this.padding.left, vy = this.padding.top + this.height, ly = this.padding.top
+
+            let i = 0
+            while (i <= this.maxX) {
+                _drawLine(i, x, ly)
+                _drawReferencePoint(x, vy)
+                _drawLabelValue(o.onDrawLabelX(i), x, vy)
+
+                i += labelStep
+                x = this.padding.left + i * this.ratioX
+            }
+        }
+    }
+
+    drawLabelY(){}
+
     draw(){
+        this.drawLabelX()
         this.drawGraph()
         this.drawTooltip()
     }

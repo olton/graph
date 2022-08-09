@@ -12,7 +12,7 @@ const chart = new Chart("#chart1", {
         height: "700px"
     },
     axis: {
-        origin: ORIGIN_BOTTOM_RIGHT,
+        origin: ORIGIN_BOTTOM_LEFT,
     },
     cross: {
     },
@@ -80,10 +80,27 @@ let line = new LineChart([graph1], {
     tooltip: {
         ...defaultTooltip
     },
+    labels: {
+        x: {
+            line: {
+                color: "red",
+            },
+            text: {
+                font: {
+                    size: 32
+                }
+            },
+            step: 10,
+            // skipFirst: false,
+            // skipLast: false
+        }
+    },
     onDrawValue: (x, y) => {
         return `(${Math.round(x)}, ${Math.round(y)})`
-    }
+    },
+    onDrawLabelX: v => `${Math.ceil(+v)}`
 })
+
 
 chart.addChart(line)
 //
