@@ -24,19 +24,22 @@ export const defaultAxis = {
         style: {
             ...defaultLineStyle,
             ...factor
-        }
+        },
+        show: true,
     },
     y: {
         style: {
             ...defaultLineStyle,
             ...factor
-        }
+        },
+        show: true,
     },
 }
 
 export function drawAxis (ctx, options = {}) {
     const axis = merge({}, defaultAxis, options)
-    const {x: {style: styleX}, y: {style: styleY}, origin} = axis
+    const {x: ax, y: ay, origin} = axis
+    const styleX = ax.style, styleY = ay.style
     const width = ctx.canvas.width
     const height = ctx.canvas.height
     const padding = this.padding
@@ -101,18 +104,22 @@ export function drawAxis (ctx, options = {}) {
 
     if (origin === ORIGIN_CENTER_CENTER) {
         if (styleX) {
-            axisHorizontalCenter()
-            if (styleX.factor) {
-                arrowLeft(x, y)
-                arrowRight(x2, y)
+            if (ax.show) {
+                axisHorizontalCenter()
+                if (styleX.factor) {
+                    arrowLeft(x, y)
+                    arrowRight(x2, y)
+                }
             }
             zero.x = x + (x2-x)/2
         }
         if (styleY) {
-            axisVerticalCenter()
-            if (styleY.factor) {
-                arrowUp(x, y)
-                arrowDown(x, y2)
+            if (ay.show) {
+                axisVerticalCenter()
+                if (styleY.factor) {
+                    arrowUp(x, y)
+                    arrowDown(x, y2)
+                }
             }
             zero.y = y + (y2-y)/2
         }
@@ -120,17 +127,21 @@ export function drawAxis (ctx, options = {}) {
 
     if (origin === ORIGIN_BOTTOM_CENTER) {
         if (styleX) {
-            axisHorizontalBottom()
-            if (styleX.factor) {
-                arrowLeft(x, y)
-                arrowRight(x2, y2)
+            if (ax.show) {
+                axisHorizontalBottom()
+                if (styleX.factor) {
+                    arrowLeft(x, y)
+                    arrowRight(x2, y2)
+                }
             }
             zero.x = x + (x2-x)/2
         }
         if (styleY) {
-            axisVerticalCenter()
-            if (styleY.factor) {
-                arrowUp(x, y)
+            if (ay.show) {
+                axisVerticalCenter()
+                if (styleY.factor) {
+                    arrowUp(x, y)
+                }
             }
             zero.y = y2
         }
@@ -138,17 +149,21 @@ export function drawAxis (ctx, options = {}) {
 
     if (origin === ORIGIN_TOP_CENTER) {
         if (styleX) {
-            axisHorizontalTop()
-            if (styleX.factor) {
-                arrowLeft(x, y)
-                arrowRight(x2, y2)
+            if (ax.show) {
+                axisHorizontalTop()
+                if (styleX.factor) {
+                    arrowLeft(x, y)
+                    arrowRight(x2, y2)
+                }
             }
             zero.x = x + (x2-x)/2
         }
         if (styleY) {
-            axisVerticalCenter()
-            if (styleY.factor) {
-                arrowDown(x, y2)
+            if (ay.show) {
+                axisVerticalCenter()
+                if (styleY.factor) {
+                    arrowDown(x, y2)
+                }
             }
             zero.y = y
         }
@@ -156,17 +171,21 @@ export function drawAxis (ctx, options = {}) {
 
     if (origin === ORIGIN_LEFT_CENTER) {
         if (styleX) {
-            axisHorizontalCenter()
-            if (styleX.factor) {
-                arrowRight(x2, y)
+            if (ax.show) {
+                axisHorizontalCenter()
+                if (styleX.factor) {
+                    arrowRight(x2, y)
+                }
             }
             zero.x = x
         }
         if (styleY) {
-            axisVerticalLeft()
-            if (styleY.factor) {
-                arrowUp(x, y)
-                arrowDown(x, y2)
+            if (ay.show) {
+                axisVerticalLeft()
+                if (styleY.factor) {
+                    arrowUp(x, y)
+                    arrowDown(x, y2)
+                }
             }
             zero.y = y + (y2-y)/2
         }
@@ -174,17 +193,21 @@ export function drawAxis (ctx, options = {}) {
 
     if (origin === ORIGIN_RIGHT_CENTER) {
         if (styleX) {
-            axisHorizontalCenter()
-            if (styleX.factor) {
-                arrowLeft(x, y)
+            if (ax.show) {
+                axisHorizontalCenter()
+                if (styleX.factor) {
+                    arrowLeft(x, y)
+                }
             }
             zero.x = x2
         }
         if (styleY) {
-            axisVerticalRight()
-            if (styleY.factor) {
-                arrowUp(x, y)
-                arrowDown(x, y2)
+            if (ay.show) {
+                axisVerticalRight()
+                if (styleY.factor) {
+                    arrowUp(x, y)
+                    arrowDown(x, y2)
+                }
             }
             zero.y = y +(y2-y)/2
         }
@@ -192,16 +215,20 @@ export function drawAxis (ctx, options = {}) {
 
     if (origin === ORIGIN_TOP_LEFT) {
         if (styleX) {
-            axisHorizontalTop()
-            if (styleX.factor) {
-                arrowRight(x2, y)
+            if (ax.show) {
+                axisHorizontalTop()
+                if (styleX.factor) {
+                    arrowRight(x2, y)
+                }
             }
             zero.x = x
         }
         if (styleY) {
-            axisVerticalLeft()
-            if (styleY.factor) {
-                arrowDown(x, y2)
+            if (ay.show) {
+                axisVerticalLeft()
+                if (styleY.factor) {
+                    arrowDown(x, y2)
+                }
             }
             zero.y = y
         }
@@ -209,16 +236,20 @@ export function drawAxis (ctx, options = {}) {
 
     if (origin === ORIGIN_BOTTOM_LEFT) {
         if (styleX) {
-            axisHorizontalBottom()
-            if (styleX.factor) {
-                arrowRight(x2, y2)
+            if (ax.show) {
+                axisHorizontalBottom()
+                if (styleX.factor) {
+                    arrowRight(x2, y2)
+                }
             }
             zero.x = x
         }
         if (styleY) {
-            axisVerticalLeft()
-            if (styleY.factor) {
-                arrowUp(x, y)
+            if (ay.show) {
+                axisVerticalLeft()
+                if (styleY.factor) {
+                    arrowUp(x, y)
+                }
             }
             zero.y = y2
         }
@@ -226,16 +257,20 @@ export function drawAxis (ctx, options = {}) {
 
     if (origin === ORIGIN_BOTTOM_RIGHT) {
         if (styleX) {
-            axisHorizontalBottom()
-            if (styleX.factor) {
-                arrowLeft(x, y)
+            if (ax.show) {
+                axisHorizontalBottom()
+                if (styleX.factor) {
+                    arrowLeft(x, y)
+                }
             }
             zero.x = x2
         }
         if (styleY) {
-            axisVerticalRight()
-            if (styleY.factor) {
-                arrowUp(x, y)
+            if (ay.show) {
+                axisVerticalRight()
+                if (styleY.factor) {
+                    arrowUp(x, y)
+                }
             }
             zero.y = y2
         }
@@ -243,16 +278,20 @@ export function drawAxis (ctx, options = {}) {
 
     if (origin === ORIGIN_TOP_RIGHT) {
         if (styleX) {
-            axisHorizontalTop()
-            if (styleX.factor) {
-                arrowLeft(x, y)
+            if (ax.show) {
+                axisHorizontalTop()
+                if (styleX.factor) {
+                    arrowLeft(x, y)
+                }
             }
             zero.x = x2
         }
         if (styleY) {
-            axisVerticalRight()
-            if (styleY.factor) {
-                arrowDown(x2-2, y2)
+            if (ay.show) {
+                axisVerticalRight()
+                if (styleY.factor) {
+                    arrowDown(x2 - 2, y2)
+                }
             }
             zero.y = y
         }

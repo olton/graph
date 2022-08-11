@@ -144,8 +144,6 @@ export class LineChart {
         if (isNaN(this.maxX)) this.maxX = 100
         if (isNaN(this.minY)) this.minX = 0
         if (isNaN(this.maxY)) this.maxX = 100
-
-        console.log(this.minY, this.maxY)
     }
 
     calcRatio(){
@@ -388,7 +386,7 @@ export class LineChart {
                 labelStep = Math.round((this.maxX - this.minX) / labelStyle.count)
             }
         } else {
-            labelStep = labelStyle.step
+            labelStep = (this.maxX - this.minX) / labelStyle.step
         }
 
         if (!labelStep) return
@@ -405,6 +403,7 @@ export class LineChart {
                 const valHeight = textHeight(this.ctx, ""+val, labelStyle.font)
                 const tx = x - valWidth / 2 + labelStyle.shift.x
                 const ty = y + valHeight + labelStyle.font.size/2 + labelStyle.shift.y
+
                 drawText(
                     this.ctx,
                     `${val}`, [tx, ty, 0],
@@ -416,7 +415,7 @@ export class LineChart {
 
         const _drawLine = (i, x, y) => {
             if (labelStyle.line) {
-                if (i === 0 && labelStyle.skipFirst || i === labelStyle.count && labelStyle.skipLast) {
+                if (i === this.minX && labelStyle.skipFirst) { // TODO add skip last
                 } else {
                     const from = {x, y}
                     const to = {x, y: y + this.height}
@@ -439,14 +438,14 @@ export class LineChart {
         } else {
             let x = this.padding.left, vy = this.padding.top + this.height, ly = this.padding.top
 
-            let i = 0
-            while (i <= this.maxX) {
+            let i = this.minX
+
+            while (i < this.maxX + 1) {
                 _drawLine(i, x, ly)
                 _drawReferencePoint(x, vy)
                 _drawLabelValue(o.onDrawLabelX(i), x, vy)
-
                 i += labelStep
-                x = this.padding.left + i * this.ratioX
+                x += labelStep * this.ratioX
             }
         }
     }
@@ -461,7 +460,7 @@ export class LineChart {
                 labelStep = (this.maxY - this.minY) / labelStyle.count
             }
         } else {
-            labelStep = labelStyle.step
+            labelStep = (this.maxY - this.minY) / labelStyle.step
         }
 
         if (!labelStep) return
@@ -478,6 +477,7 @@ export class LineChart {
                 const valHeight = textHeight(this.ctx, val, labelStyle.font)
                 const tx = x - valWidth - labelStyle.font.size/2 + labelStyle.shift.x
                 const ty = y + labelStyle.shift.y
+
                 drawText(
                     this.ctx,
                     `${val}`, [tx, ty, 0],
@@ -489,7 +489,7 @@ export class LineChart {
 
         const _drawLine = (i, x, y) => {
             if (labelStyle.line) {
-                if (i === 0 && labelStyle.skipFirst || i === labelStyle.count && labelStyle.skipLast) {
+                if (i === this.minY && labelStyle.skipFirst) { // TODO add skip last
                 } else {
                     const from = {x, y}
                     const to = {x: x + this.width, y}
@@ -511,10 +511,9 @@ export class LineChart {
             }
         } else {
             let x = this.padding.left, vy = this.padding.top + this.height
-            console.log(vy, labelStep)
 
-            let i = 0
-            while (i <= this.maxY) {
+            let i = this.minY
+            while (i < this.maxY + 1) {
                 _drawLine(i, x, vy)
                 _drawReferencePoint(x, vy)
                 _drawLabelValue(o.onDrawLabelY(i), x, vy)

@@ -69,17 +69,25 @@ let line = new LineChart([graph1], {
     labels: {
         x: {
             text: {
-                angle: 0,
+                angle: -1,
             },
-            step: "auto",
-            count: 5
+            step: 10,
+            count: 5,
+            skipFirst: true,
+            line: {
+                color: "rgba(51,178,255,1)"
+            },
         },
         y: {
             text: {
                 angle: 0,
             },
             step: 10,
-            count: 5
+            count: 5,
+            skipFirst: true,
+            line: {
+                color: "rgba(51,178,255,1)"
+            },
         }
     },
     legend: {
