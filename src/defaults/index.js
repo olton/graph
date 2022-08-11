@@ -19,6 +19,18 @@ export const BOTTOM_LEFT = 'bottom-left'
 export const BOTTOM_CENTER = 'bottom-center'
 export const BOTTOM_RIGHT = 'bottom-right'
 
+export const defaultBoundaries = {
+    min: {
+        x: null,
+        y: null
+    },
+    max: {
+        x: null,
+        y: null
+    },
+    increment: null
+}
+
 export const defaultDotStyle = {
     type: DOT_TYPE_DOT,
     size: 1,
@@ -109,10 +121,10 @@ export const defaultLabelStyle = {
     },
     text: {
         ...defaultTextStyle,
-        font: {
-            ...defaultFontStyle,
-            size: 24
-        },
+    },
+    font: {
+        ...defaultFontStyle,
+        size: 24
     },
     referencePoint: true,
     skipFirst: true,
@@ -128,7 +140,10 @@ export const defaultLabelStyle = {
 
 export const defaultLabelStyleX = {
     ...defaultLabelStyle,
-    angle: 45,
+    text: {
+        ...defaultTextStyle,
+        angle: 45,
+    }
 }
 
 export const defaultLabelStyleY = {

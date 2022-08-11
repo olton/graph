@@ -23,7 +23,7 @@ import {normPadding} from "../../helpers/padding.js";
 import {capitalize} from "../../helpers/capitalize.js";
 import {drawVector} from "../../primitives/vector.js";
 import {minMax} from "../../helpers/min-max.js";
-import {datetime} from "../../../node_modules/@olton/datetime/src/index.js";
+import {isNumber} from "../../helpers/is-number.js";
 
 const dotFunc = {
     drawCircle,
@@ -135,15 +135,17 @@ export class LineChart {
         const [minX, maxX] = minMax(a, 'x');
         const [minY, maxY] = minMax(a, 'y');
 
-        this.minX = o.boundaries.min.x < minX ? o.boundaries.min.x : minX
-        this.maxX = o.boundaries.max.x > maxX ? o.boundaries.max.x : maxX
-        this.minY = o.boundaries.min.y < minY ? o.boundaries.min.y : minY
-        this.maxY = o.boundaries.max.y > maxY ? o.boundaries.max.y : maxY
+        this.minX = isNumber(o.boundaries.min.x) ? o.boundaries.min.x : minX
+        this.maxX = isNumber(o.boundaries.max.x) ? o.boundaries.max.x : maxX
+        this.minY = isNumber(o.boundaries.min.y) ? o.boundaries.min.y : minY
+        this.maxY = isNumber(o.boundaries.max.y) ? o.boundaries.max.y : maxY
 
         if (isNaN(this.minX)) this.minX = 0
         if (isNaN(this.maxX)) this.maxX = 100
         if (isNaN(this.minY)) this.minX = 0
         if (isNaN(this.maxY)) this.maxX = 100
+
+        console.log(this.minY, this.maxY)
     }
 
     calcRatio(){
@@ -277,7 +279,12 @@ export class LineChart {
                             }
                             tw = textWidth(this.ctx, val, o.values.font)
                             th = val.split("\n").length * o.values.font.size
-                            drawText(ctx, `${val}`, [_x - tw / 2 + o.values.shift.x, _y - th + o.values.shift.y, 0], o.values)
+                            drawText(
+                                ctx,
+                                `${val}`, [_x - tw / 2 + o.values.shift.x, _y - th + o.values.shift.y, 0],
+                                o.values,
+                                o.values.font
+                            )
                         }
                     }
                 }
@@ -392,20 +399,17 @@ export class LineChart {
             }
         }
 
-        const _drawLabelValue = (v, x, y) => {
+        const _drawLabelValue = (val, x, y) => {
             if (labelStyle.showValue) {
-                const val = o.onDrawLabelX(v)
-                const valWidth = textWidth(this.ctx, ""+val, labelStyle.text.font)
-                const valHeight = textHeight(this.ctx, ""+val, labelStyle.text.font)
+                const valWidth = textWidth(this.ctx, ""+val, labelStyle.font)
+                const valHeight = textHeight(this.ctx, ""+val, labelStyle.font)
                 const tx = x - valWidth / 2 + labelStyle.shift.x
-                const ty = y + valHeight + labelStyle.text.font.size/2 + labelStyle.shift.y
-                if (labelStyle.text.angle) {
-                    labelStyle.text.translate = [Math.round(tx + valWidth/2), ty]
-                }
+                const ty = y + valHeight + labelStyle.font.size/2 + labelStyle.shift.y
                 drawText(
                     this.ctx,
                     `${val}`, [tx, ty, 0],
-                    labelStyle.text
+                    labelStyle.text,
+                    labelStyle.font
                 )
             }
         }
@@ -429,9 +433,7 @@ export class LineChart {
                 _drawLine(i, x, ly)
                 _drawReferencePoint(x, vy)
                 _drawLabelValue(o.onDrawLabelX(labelValue), x, vy)
-
                 labelValue += labelStep
-                console.log(datetime(+labelValue))
                 x = this.padding.left + (labelValue - this.minX) * this.ratioX
             }
         } else {
@@ -456,7 +458,7 @@ export class LineChart {
 
         if (labelStyle.step === 'auto') {
             if (labelStyle.count) {
-                labelStep = (this.maxX - this.minX) / labelStyle.count
+                labelStep = (this.maxY - this.minY) / labelStyle.count
             }
         } else {
             labelStep = labelStyle.step
@@ -470,16 +472,17 @@ export class LineChart {
             }
         }
 
-        const _drawLabelValue = (v, x, y) => {
+        const _drawLabelValue = (val, x, y) => {
             if (labelStyle.showValue) {
-                const val = o.onDrawLabelY(v)
-                const valWidth = textWidth(this.ctx, val, labelStyle.text.font)
-                const valHeight = textHeight(this.ctx, val, labelStyle.text.font)
-                console.log(val)
+                const valWidth = textWidth(this.ctx, val, labelStyle.font)
+                const valHeight = textHeight(this.ctx, val, labelStyle.font)
+                const tx = x - valWidth - labelStyle.font.size/2 + labelStyle.shift.x
+                const ty = y + labelStyle.shift.y
                 drawText(
                     this.ctx,
-                    `${val}`, [x - valWidth - labelStyle.text.font.size/2 + labelStyle.shift.x, y + labelStyle.shift.y, 0],
-                    labelStyle.text
+                    `${val}`, [tx, ty, 0],
+                    labelStyle.text,
+                    labelStyle.font
                 )
             }
         }
@@ -502,22 +505,21 @@ export class LineChart {
             for (let i = 0; i <= labelStyle.count; i++) {
                 _drawLine(i, x, vy)
                 _drawReferencePoint(x, vy)
-                _drawLabelValue(o.onDrawLabelX(this.maxY - (vy - this.padding.top) / this.ratioX), x, vy)
-
+                _drawLabelValue(o.onDrawLabelY(labelValue), x, vy)
                 labelValue += labelStep
                 vy = (this.padding.top + this.height) - (labelValue - this.minY) * this.ratioY
             }
         } else {
-            let x = this.padding.left, vy = this.padding.top + this.height, lx = this.padding.left + this.width
+            let x = this.padding.left, vy = this.padding.top + this.height
+            console.log(vy, labelStep)
 
             let i = 0
             while (i <= this.maxY) {
                 _drawLine(i, x, vy)
                 _drawReferencePoint(x, vy)
-                _drawLabelValue(o.onDrawLabelX(i), x, vy)
-
+                _drawLabelValue(o.onDrawLabelY(i), x, vy)
                 i += labelStep
-                vy = (this.padding.top + this.height) - i * this.ratioX
+                vy -= labelStep * this.ratioY
             }
         }
     }
@@ -568,7 +570,7 @@ export class LineChart {
                 const w = textWidth(this.ctx, l, o.legend.font)
                 const n = o.onDrawLegend(l)
                 drawSquare(this.ctx, [x, y, 10], legend[l])
-                drawText(this.ctx, n, [x + 20, y, w], {textStyle: legend[l], font: {...o.legend.font}})
+                drawText(this.ctx, n, [x + 20, y, w], legend[l], o.legend.font)
                 i += space
             }
 

@@ -78,7 +78,7 @@ export class TextChart {
             }
         }
 
-        drawText(this.ctx, this.text,[x, y, this.w], this.options)
+        drawText(this.ctx, this.text,[x, y, this.w], this.options, this.options.font)
     }
 }
 

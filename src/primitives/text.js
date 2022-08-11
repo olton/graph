@@ -1,14 +1,14 @@
 import {textWidth} from "../helpers/text.js";
 
-export const drawText = (ctx, text, [x = 0, y = 0, w = 0], textStyle = {}) => {
-    const {align = 'left', baseLine = 'middle', color = '#000', stroke = '#000', font = {}, angle = 0, translate = [0,0]} = textStyle
+export const drawText = (ctx, text, [x = 0, y = 0, w = 0], textStyle = {}, font = {}) => {
+    const {align = 'left', baseLine = 'middle', color = '#000', stroke = '#000', angle = 0, translate = [0,0]} = textStyle
     const {style = 'normal', weight = 'normal', size = 12, lineHeight = 1, family = 'sans-serif'} = font
-    let tw = 0, tX = 0, tY = 0
+    let tw = 0, tx = 0, ty = 0
 
     if (typeof translate === "number") {
-        tX = tY = translate
+        tx = tx = translate
     } else if (Array.isArray(translate)) {
-        [tX, tY] = translate
+        [tx, ty] = translate
     }
 
     ctx.save()
@@ -17,7 +17,7 @@ export const drawText = (ctx, text, [x = 0, y = 0, w = 0], textStyle = {}) => {
     ctx.fillStyle = color
     ctx.strokeStyle = stroke
     ctx.font = `${style} ${weight} ${size}px/${lineHeight} ${family}`
-    ctx.translate(tX, tY)
+    ctx.translate(tx, ty)
     ctx.rotate(angle * Math.PI / 180)
     ctx.textBaseline = baseLine
     tw = textWidth(ctx, text, font)

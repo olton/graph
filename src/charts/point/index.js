@@ -192,7 +192,12 @@ export class PointChart {
 
                     if (o.values && o.values.show) {
                         const val = o.values.template.replace('x', x).replace('y', y)
-                        drawText(ctx, `${val}`, [_x + o.values.translate[0] * dpi, _y + o.values.translate[1] * dpi, 0], o.values)
+                        drawText(
+                            ctx,
+                            `${val}`, [_x + o.values.translate[0] * dpi, _y + o.values.translate[1] * dpi, 0],
+                            o.values,
+                            o.values.font
+                        )
                     }
                 }
             }

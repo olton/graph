@@ -1,0 +1,1 @@
+export const isNumber = v => typeof v !== "undefined" && v !== null && !isNaN(+v)

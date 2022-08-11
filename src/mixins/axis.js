@@ -65,36 +65,36 @@ export function drawAxis (ctx, options = {}) {
 
     const axisHorizontalCenter = () => {
         x = padding.left; x2 = width - padding.right
-        y = padding.top + (height - (padding.top + padding.bottom) - styleX.size/2) / 2; y2 = y
+        y = padding.top + (height - (padding.top + padding.bottom) - styleX.size) / 2; y2 = y
         drawVector(ctx,{x, y},{x: x2, y: y2}, styleX)
     }
 
     const axisVerticalCenter = () => {
-        x = padding.left + (width - (padding.left + padding.right) - styleY.size/2) / 2; x2 = x
+        x = padding.left + (width - (padding.left + padding.right) - styleY.size) / 2; x2 = x
         y = padding.top; y2 = height - padding.bottom
         drawVector(ctx,{x, y},{x: x2, y: y2}, styleY)
     }
 
     const axisHorizontalBottom = () => {
         x = padding.left; x2 = width - padding.right
-        y = height - padding.bottom - styleX.size/2; y2 = y
+        y = height - padding.bottom - styleX.size; y2 = y
         drawVector(ctx,{x, y},{x: x2, y: y2}, styleX)
     }
 
     const axisHorizontalTop = () => {
         x = padding.left; x2 = width - padding.right
-        y = padding.top + styleX.size/2; y2 = y
+        y = padding.top + styleX.size; y2 = y
         drawVector(ctx,{x, y},{x: x2, y: y2}, styleX)
     }
 
     const axisVerticalLeft = () => {
-        x = padding.left + styleY.size/2
+        x = padding.left + styleY.size
         y = padding.top; y2 = height - padding.bottom
         drawVector(ctx,{x, y},{x, y: y2}, styleY)
     }
 
     const axisVerticalRight = () => {
-        x = width - (padding.right + styleY.size/2)
+        x = width - (padding.right + styleY.size)
         y = padding.top; y2 = height - padding.bottom
         drawVector(ctx,{x, y},{x, y: y2}, styleY)
     }

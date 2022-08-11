@@ -5,23 +5,13 @@ import {
     defaultValueStyle,
     defaultTooltip,
     defaultLabelStyleX,
-    defaultLabelStyleY, defaultLegendStyle
+    defaultLabelStyleY, defaultLegendStyle, defaultBoundaries
 } from "../../defaults/index.js";
 
 export const defaultLineChartOptions = {
     graphs: [],
     boundaries: {
-        min: {
-            x: 0,
-            y: 0,
-            d: 0
-        },
-        max: {
-            x: 100,
-            y: 100,
-            d: 0
-        },
-        increment: 0
+        ...defaultBoundaries
     },
     lines: true,
     dots: true,
