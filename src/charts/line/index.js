@@ -30,6 +30,9 @@ import {capitalize} from "../../helpers/capitalize.js";
 import {drawVector} from "../../primitives/vector.js";
 import {minMax} from "../../helpers/min-max.js";
 import {isNumber} from "../../helpers/is-number.js";
+import {AxisY} from "../../mixins/axis-y.js";
+import {AxisX} from "../../mixins/axis-x.js";
+import {Tooltip} from "../../mixins/tooltip.js";
 
 const dotFunc = {
     drawCircle,
@@ -257,7 +260,6 @@ export class LineChart {
             }
 
             if (include.length) {
-
                 if (graphStyle.line.fill && graphStyle.line.fill !== "transparent") {
                     let areaCoords = []
                     let lastX = include[include.length - 1][0]
@@ -353,218 +355,6 @@ export class LineChart {
         }
     }
 
-    removeTooltip() {
-        if (this.tooltip) {
-            this.tooltip.remove()
-            this.tooltip = null
-        }
-    }
-
-    showTooltip(ctx, [mx, my], [x, y], style){
-        const o = this.options
-
-        this.removeTooltip()
-
-        if (!this.data || !this.data.length) return
-
-        let {font, shadow, border, padding, timeout} = o.tooltip
-
-        padding = normPadding(padding)
-
-        const tooltip = document.createElement("div")
-
-        tooltip.style.position = 'fixed'
-        tooltip.style.border = `${border.width}px ${border.lineType} ${border.color}`
-        tooltip.style.borderRadius = `${border.radius}`
-        tooltip.style.padding = `${padding.top}px ${padding.right}px ${padding.bottom}px ${padding.left}px`
-        tooltip.style.background = `${o.tooltip.background}`
-        tooltip.style.font = `${font.style} ${font.weight} ${font.size}px/${font.lineHeight} ${font.family}`
-        tooltip.style.boxShadow = `${shadow.shiftX}px ${shadow.shiftY}px ${shadow.blur}px ${shadow.color}`
-
-        tooltip.innerHTML = o.onTooltipShow.apply(this, [x, y])
-
-        document.querySelector('body').appendChild(tooltip)
-
-        tooltip.style.top = `${my - tooltip.clientHeight - 15}px`
-        tooltip.style.left = `${mx - tooltip.clientWidth / 2 - 5}px`
-
-        this.tooltip = tooltip
-
-        setTimeout(()=>{
-            this.removeTooltip()
-        }, timeout)
-    }
-
-    drawLabelX(){
-        const o = this.options
-        const labelStyle = o.labels.x
-        let labelStep = 0
-
-        if (labelStyle.step === 'auto') {
-            if (labelStyle.count) {
-                labelStep = Math.round((this.maxX - this.minX) / labelStyle.count)
-            }
-        } else {
-            labelStep = (this.maxX - this.minX) / labelStyle.step
-        }
-
-        if (!labelStep) return
-
-        const _drawReferencePoint = (x, y) => {
-            if (labelStyle.line && labelStyle.referencePoint) {
-                drawDot(this.ctx, [x, y, 4], labelStyle.line)
-            }
-        }
-
-        const _drawLabelValue = (val, x, y) => {
-            if (labelStyle.showValue) {
-                const vw = textWidth(this.ctx, ""+val, labelStyle.font)
-                const vh = textHeight(this.ctx, ""+val, labelStyle.font)
-                const tx = x - vw / 2 + labelStyle.shift.x
-                const ty = y + vh + labelStyle.font.size/2 + labelStyle.shift.y
-
-                this.ctx.save()
-
-                if (labelStyle.text.angle) {
-                    const rx = x + vw/2 - Math.abs(labelStyle.text.angle/2) + labelStyle.shift.x, ry = y - labelStyle.font.size/2 + vw + labelStyle.shift.y
-                    this.ctx.translate(rx, ry)
-                    this.ctx.rotate(labelStyle.text.angle * Math.PI / 180)
-                    this.ctx.translate(-rx, -ry)
-                }
-
-                drawText(
-                    this.ctx,
-                    `${val}`, [tx, ty, 0],
-                    labelStyle.text,
-                    labelStyle.font
-                )
-
-                this.ctx.restore()
-            }
-        }
-
-        const _drawLine = (i, x, y) => {
-            if (labelStyle.line) {
-                if (i === this.minX && labelStyle.skipFirst) { // TODO add skip last
-                } else {
-                    const from = {x, y}
-                    const to = {x, y: y + this.height}
-                    drawVector(this.ctx, from, to, labelStyle.line) // line
-                }
-            }
-        }
-
-        if (labelStyle.step === 'auto') {
-            let labelValue = this.minX
-            let x = this.padding.left, vy = this.padding.top + this.height, ly = this.padding.top
-
-            for (let i = 0; i <= labelStyle.count; i++) {
-                _drawLine(i, x, ly)
-                _drawReferencePoint(x, vy)
-                _drawLabelValue(o.onDrawLabelX(labelValue), x, vy)
-                labelValue += labelStep
-                x = this.padding.left + (labelValue - this.minX) * this.ratioX
-            }
-        } else {
-            let x = this.padding.left, vy = this.padding.top + this.height, ly = this.padding.top
-
-            let i = this.minX
-
-            while (i < this.maxX + 1) {
-                _drawLine(i, x, ly)
-                _drawReferencePoint(x, vy)
-                _drawLabelValue(o.onDrawLabelX(i), x, vy)
-
-                i += labelStep
-                x += labelStep * this.ratioX
-            }
-        }
-    }
-
-    drawLabelY(){
-        const o = this.options
-        const labelStyle = o.labels.y
-        let labelStep = 0
-
-        if (labelStyle.step === 'auto') {
-            if (labelStyle.count) {
-                labelStep = (this.maxY - this.minY) / labelStyle.count
-            }
-        } else {
-            labelStep = (this.maxY - this.minY) / labelStyle.step
-        }
-
-        if (!labelStep) return
-
-        const _drawReferencePoint = (x, y) => {
-            if (labelStyle.line && labelStyle.referencePoint) {
-                drawDot(this.ctx, [x, y, 4], labelStyle.line)
-            }
-        }
-
-        const _drawLabelValue = (val, x, y) => {
-            if (labelStyle.showValue) {
-                const vw = textWidth(this.ctx, val, labelStyle.font)
-                const vh = textHeight(this.ctx, val, labelStyle.font)
-                const tx = x - vw - labelStyle.font.size/2 + labelStyle.shift.x
-                const ty = y + labelStyle.shift.y
-
-                this.ctx.save()
-
-                if (labelStyle.text.angle) {
-                    const rx = x + vw/2 - Math.abs(labelStyle.text.angle/2) + labelStyle.shift.x, ry = y - labelStyle.font.size/2 + vw + labelStyle.shift.y
-                    this.ctx.translate(rx, ry)
-                    this.ctx.rotate(labelStyle.text.angle * Math.PI / 180)
-                    this.ctx.translate(-rx, -ry)
-                }
-
-                drawText(
-                    this.ctx,
-                    `${val}`, [tx, ty, 0],
-                    labelStyle.text,
-                    labelStyle.font
-                )
-
-                this.ctx.restore()
-            }
-        }
-
-        const _drawLine = (i, x, y) => {
-            if (labelStyle.line) {
-                if (i === this.minY && labelStyle.skipFirst) { // TODO add skip last
-                } else {
-                    const from = {x, y}
-                    const to = {x: x + this.width, y}
-                    drawVector(this.ctx, from, to, labelStyle.line) // line
-                }
-            }
-        }
-
-        if (labelStyle.step === 'auto') {
-            let labelValue = this.minY
-            let x = this.padding.left, vy = this.padding.top + this.height, lx = this.padding.left + this.width
-
-            for (let i = 0; i <= labelStyle.count; i++) {
-                _drawLine(i, x, vy)
-                _drawReferencePoint(x, vy)
-                _drawLabelValue(o.onDrawLabelY(labelValue), x, vy)
-                labelValue += labelStep
-                vy = (this.padding.top + this.height) - (labelValue - this.minY) * this.ratioY
-            }
-        } else {
-            let x = this.padding.left, vy = this.padding.top + this.height
-
-            let i = this.minY
-            while (i < this.maxY + 1) {
-                _drawLine(i, x, vy)
-                _drawReferencePoint(x, vy)
-                _drawLabelValue(o.onDrawLabelY(i), x, vy)
-                i += labelStep
-                vy -= labelStep * this.ratioY
-            }
-        }
-    }
-
     drawLegend(){
         if (this.data.length === 0) return
 
@@ -611,7 +401,7 @@ export class LineChart {
                 const w = textWidth(this.ctx, l, o.legend.font)
                 const n = o.onDrawLegend(l)
                 drawSquare(this.ctx, [x, y, 10], legend[l])
-                drawText(this.ctx, n, [x + 20, y, w], legend[l], o.legend.font)
+                drawText(this.ctx, n, [x + 20, y, w], {...legend[l], color: '#000'}, o.legend.font)
                 i += space
             }
 
@@ -619,6 +409,11 @@ export class LineChart {
 
         }
     }
+
+    drawLabelX(){}
+    drawLabelY(){}
+    showTooltip(){}
+    removeTooltip(){}
 
     draw(){
         this.drawLabelX()
@@ -629,6 +424,6 @@ export class LineChart {
     }
 }
 
-// Object.assign(LineChart.prototype, MixinTooltip)
+Object.assign(LineChart.prototype, AxisX, AxisY, Tooltip)
 
 export const lineChart = (...args) => new LineChart(...args)

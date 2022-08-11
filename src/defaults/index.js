@@ -159,7 +159,6 @@ export const defaultLegendStyle = {
     font: {
         ...defaultFontStyle
     },
-    mode: "box", // box, name (colored box or graph name)
     position: 'left', // hor: left, right, center  ver: right, left
     vertical: false,
     rtl: false,

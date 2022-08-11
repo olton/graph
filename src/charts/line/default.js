@@ -31,16 +31,6 @@ export const defaultLineChartOptions = {
     font: {
         ...defaultFontStyle
     },
-    title: {
-        style: {
-            ...defaultTextStyle
-        },
-        font: {
-            ...defaultFontStyle
-        },
-        position: TOP_LEFT,
-        text: ""
-    },
     labels: {
         x: {
             ...defaultLabelStyleX

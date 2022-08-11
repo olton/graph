@@ -7,20 +7,11 @@ import {
 } from "../../defaults/index.js";
 
 export const defaultBarChartOptions = {
-    graphs: [],
+    graphs: {},
+    groupDistance: 10,
+    opacity: 0.9,
     font: {
         ...defaultFontStyle
-    },
-    title: {
-        align: 'left',
-        baseLine: 'middle',
-        color: '#000',
-        stroke: '#000',
-        font: {
-            ...defaultFontStyle
-        },
-        angle: 0,
-        translate: [0, 0]
     },
     labels: {
         x: {
