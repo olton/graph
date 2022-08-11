@@ -39,17 +39,17 @@
         "maintained node versions"
     ],
     "devDependencies": {
-        "parcel": "^2.6.1",
         "@babel/plugin-proposal-class-properties": "^7.17.12",
         "@babel/preset-env": "^7.18.2",
+        "@olton/datetime": "^0.2.4",
+        "jest": "^28.1.0",
+        "parcel": "^2.6.1",
         "rollup": "^2.41.2",
-        "rollup-plugin-node-resolve": "^5.2.0",
-        "rollup-plugin-terser": "^7.0.2",
         "rollup-plugin-babel": "^4.4.0",
         "rollup-plugin-commonjs": "^10.1.0",
+        "rollup-plugin-node-resolve": "^5.2.0",
+        "rollup-plugin-terser": "^7.0.2",
         "shx": "^0.3.4",
-        "jest": "^28.1.0"
-    },
-    "dependencies": {
+        "systeminformation": "^5.12.4"
     }
 }

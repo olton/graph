@@ -120,13 +120,35 @@ export const defaultLabelStyle = {
     skip: 0,
     showValue: true,
     fixed: 0,
+    shift: {
+        x: 0,
+        y: 0
+    }
 }
 
 export const defaultLabelStyleX = {
     ...defaultLabelStyle,
-    angle: 45
+    angle: 45,
 }
 
 export const defaultLabelStyleY = {
     ...defaultLabelStyle
+}
+
+export const defaultLegendStyle = {
+    background: '#fff',
+    border: {
+        ...defaultBorder
+    },
+    font: {
+        ...defaultFontStyle
+    },
+    mode: "box", // box, name (colored box or graph name)
+    position: 'left', // hor: left, right, center  ver: right, left
+    vertical: false,
+    rtl: false,
+    shift: {
+        x: 0,
+        y: 0
+    }
 }

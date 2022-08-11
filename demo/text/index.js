@@ -42,10 +42,10 @@ const chart = new Chart("#chart", {
 
 const text = new TextChart(
     `Copyright 2022 by Serhii Pimenov.\nAll Rights Reserver.`,
-    [0, 10],
+    [0, 0],
     {
         ...defaultTextStyle,
-        position: 'v-top-left',
+        position: 'bottom-right',
         font: {
             size: 24
         }

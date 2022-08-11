@@ -52,6 +52,7 @@ export class Chart {
         this.zero = null
         this.texts = []
         this.images = []
+        this.title = this.options.title
 
         this.proxy = new Proxy({}, {
             set(...args) {
@@ -151,7 +152,7 @@ export class Chart {
         this.ctx.fillRect(0, 0, this.viewWidth, this.viewHeight)
     }
 
-    title(){
+    drawTitle(){
         const {text, position, font, style} = this.options.title
         let x = 0, y = 0, w = 0
 
@@ -171,6 +172,12 @@ export class Chart {
         drawText(this.ctx, text, [x, y, w], this.options.title)
     }
 
+    setTitle(val, style){
+        if (style) this.title = merge(this.title, style)
+        this.title.text = val
+        this.resize()
+    }
+
     draw(){
         const o = this.options
 
@@ -183,7 +190,7 @@ export class Chart {
 
         this.charts.forEach(chart => chart.draw())
 
-        this.title()
+        this.drawTitle()
     }
 
     resize(){

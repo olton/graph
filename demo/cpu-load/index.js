@@ -1,8 +1,8 @@
 import {Chart, TextChart} from "../../src/index.js"
 import {LineChart} from "../../src/index.js"
-import {random} from "../../src/helpers/rand.js";
 import {ORIGIN_BOTTOM_LEFT, ORIGIN_BOTTOM_RIGHT, ORIGIN_TOP_LEFT, ORIGIN_TOP_RIGHT} from "../../src/mixins/axis.js";
-import {defaultTextStyle, defaultTooltip} from "../../src/defaults/index.js";
+import {defaultTooltip} from "../../src/defaults/index.js";
+import {datetime} from "../../node_modules/@olton/datetime/src/index.js";
 
 const chart = new Chart("#cpu", {
     dpi: 2,
@@ -27,37 +27,23 @@ const chart = new Chart("#cpu", {
     padding: 40
 })
 
-
 const graph1 = []
-for(let x = 0; x <= 25; x++) {
-    graph1.push([x * 4, Math.round(random(2, 60))])
+let startX = datetime().addSecond(-100).time()
+for (let i = 0; i < 10; i++) {
+    startX+=1000
+    graph1.push([startX, 0])
 }
 
 // console.log(graph1)
 
 let line = new LineChart([graph1], {
-    graphs: [
-        {
-            line: {
-                type: "line",
-                size: 2,
-                color: "red"
-            },
-            dot: {
-                fill: "red",
-                color: "darkRed",
-                type: 'circle',
-                size: 6
-            }
-        }
-    ],
     boundaries: {
         min: {
-            x: 0,
+            x: graph1[0][0],
             y: 0
         },
         max: {
-            x: 100,
+            x: graph1[graph1.length-1][0],
             y: 100
         }
     },
@@ -65,8 +51,8 @@ let line = new LineChart([graph1], {
     origin: true,
     line: {
         type: "line",
-        color: "red",
-        fill: "rgba(255, 0, 0, .2)"
+        color: "#3de3ff",
+        fill: "rgba(51,178,255,0.2)"
     },
     values: {
         show: true,
@@ -82,20 +68,18 @@ let line = new LineChart([graph1], {
     },
     labels: {
         x: {
-            line: {
-                color: "red",
-            },
             text: {
-                angle: 0
+                angle: 45,
             },
             step: "auto",
+            count: 10
         },
         y: {
             step: "auto"
         }
     },
     legend: {
-        position: "right",
+        position: "center",
         font: {
             size: 24
         }
@@ -103,17 +87,21 @@ let line = new LineChart([graph1], {
     onDrawValue: (x, y) => {
         return `(${Math.round(x)}, ${Math.round(y)})`
     },
-    onDrawLabelX: v => `${Math.ceil(+v)}`
+    onDrawLabelX: v => {
+        // console.log(v)
+        return v
+        // return `${v ? datetime(+v).format("HH:ss") : ''}`;
+    }
 })
 
 
 chart.addChart(line)
-chart.setTitle(`CPU Load`, {
-    align: "center",
-    font: {
-        size: 32
-    }
-})
+// chart.setTitle(`Demo Graph\nLineChart with Area`, {
+//     align: "center",
+//     font: {
+//         size: 32
+//     }
+// })
 // chart.addChart(new TextChart(
 //     `Copyright 2022 by Serhii Pimenov.\nAll Rights Reserver.`,
 //     [0, 0],

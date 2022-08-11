@@ -5,7 +5,7 @@ import {
     defaultValueStyle,
     defaultTooltip,
     defaultLabelStyleX,
-    defaultLabelStyleY
+    defaultLabelStyleY, defaultLegendStyle
 } from "../../defaults/index.js";
 
 export const defaultLineChartOptions = {
@@ -62,9 +62,12 @@ export const defaultLineChartOptions = {
     tooltip: {
         ...defaultTooltip
     },
-
+    legend: {
+        ...defaultLegendStyle
+    },
     onTooltipShow: (x, y) => `(${x}, ${y})`,
     onDrawValue: (x, y) => `(${x}, ${y})`,
     onDrawLabelX: (v) => `${v}`,
     onDrawLabelY: (v) => `${v}`,
+    onDrawLegend: (v) => `${v}`,
 }

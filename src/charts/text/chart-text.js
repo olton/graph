@@ -1,7 +1,7 @@
 import {merge} from "../../helpers/merge.js";
 import {drawText} from "../../primitives/text.js";
 import {defaultTextChartOptions} from "./default.js";
-import {getTextBoundingRect, textWidth} from "../../helpers/text.js";
+import {textWidth} from "../../helpers/text.js";
 import {BOTTOM_CENTER, BOTTOM_LEFT, BOTTOM_RIGHT, TOP_CENTER, TOP_LEFT, TOP_RIGHT} from "../../defaults/index.js";
 
 export class TextChart {
@@ -32,8 +32,13 @@ export class TextChart {
 
     draw(){
         const o = this.options
-        let x, y, w
+        let x, y
         switch (o.position) {
+            case 'free': {
+                x = this.x
+                y = this.y
+                break
+            }
             case TOP_LEFT: {
                 x = 0
                 y = this.options.font.size
