@@ -143,7 +143,8 @@ export const defaultLabelStyleX = {
     ...defaultLabelStyle,
     text: {
         ...defaultTextStyle,
-        angle: 45,
+        angle: -45,
+        align: 'right'
     }
 }
 

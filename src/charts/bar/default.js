@@ -1,7 +1,7 @@
 import {
     defaultFontStyle,
     defaultLabelStyleX,
-    defaultLabelStyleY, defaultLegendStyle,
+    defaultLabelStyleY, defaultLegendStyle, defaultTextStyle,
     defaultTooltip,
     defaultValueStyle
 } from "../../defaults/index.js";
@@ -15,7 +15,11 @@ export const defaultBarChartOptions = {
     },
     labels: {
         x: {
-            ...defaultLabelStyleX
+            ...defaultLabelStyleX,
+            text: {
+                ...defaultTextStyle,
+                angle: 0
+            }
         },
         y: {
             ...defaultLabelStyleY
@@ -30,7 +34,12 @@ export const defaultBarChartOptions = {
     legend: {
         ...defaultLegendStyle
     },
-    onTooltipShow: (x, y) => `(${x}, ${y})`,
+    boundaries: {
+        min: null,
+        max: null
+    },
+    dataAxis: "y",
+    onTooltipShow: (x, y) => `${x}: ${y}`,
     onDrawValue: (v) => `${v}`,
     onDrawLabelX: (v) => `${v}`,
     onDrawLabelY: (v) => `${v}`,

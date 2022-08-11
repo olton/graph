@@ -6,6 +6,9 @@ import {drawRect} from "../../primitives/rect.js";
 import {AxisY} from "../../mixins/axis-y.js";
 import {Tooltip} from "../../mixins/tooltip.js";
 import {hexToRGBA} from "../../helpers/colors.js";
+import {drawText} from "../../primitives/text.js";
+import {textWidth} from "../../helpers/text.js";
+import {AxisX} from "../../mixins/axis-x.js";
 
 /*
 * Data can input as
@@ -34,6 +37,8 @@ export class BarChart {
     constructor(data, options) {
         this.options = merge({}, defaultBarChartOptions, options)
         this.data = data
+        this.maxX = 0
+        this.minX = 0
         this.maxY = 0
         this.minY = 0
         this.grouped = data && Array.isArray(data[0])
@@ -41,6 +46,7 @@ export class BarChart {
         this.bars = []
         this.coords = []
         this.tooltip = null
+        this.dataAxis = this.options.dataAxis.toLowerCase()
 
         for(let name in this.options.graphs) {
             this.bars.push([name, this.options.graphs[name]])
@@ -78,39 +84,104 @@ export class BarChart {
 
         const [, max] = minMaxLinear(a)
 
-        this.maxY = isNumber(o.boundaries.max.y) ? o.boundaries.max.y : max
+        this.maxX = this.maxY = isNumber(o.boundaries.max) ? o.boundaries.max : max
 
         if (isNaN(this.maxY)) this.maxY = 100
+        if (isNaN(this.maxX)) this.maxX = 100
     }
 
     calcRatio(){
-        this.ratioY = this.height / (this.maxY - this.minY)
+        this.ratioX = this.ratioY = this.height / (this.maxY - this.minY)
     }
 
     drawBars(){
+
         if (!this.data || !this.data.length) return
 
         this.coords = []
 
         if (this.grouped) {
 
-        } else {
-            let bw = (this.width / 2) / this.groups
-            let sp = (this.width / 2) / (this.groups + 1)
-            let x = sp + this.padding.left, y = this.padding.top + this.height
+            for(let i = 0; i < this.data.length; i++) {
 
-            for (let i = 0; i < this.data.length; i++) {
-                let h = this.data[i] * this.ratioY
-                let color = hexToRGBA(this.bars[i][1], this.options.opacity)
-                drawRect(this.ctx, [x, y - h, bw, h], {color, fill: color})
-                this.coords.push([x, y - h, bw, h, [this.bars[i][0], this.data[i]]])
-                x += sp + bw
+            }
+
+        } else {
+            if (this.dataAxis === 'y') {
+                let bw = (this.width / 2) / this.groups
+                let sp = (this.width / 2) / (this.groups + 1)
+                let x = sp + this.padding.left, y = this.padding.top + this.height
+
+                for (let i = 0; i < this.data.length; i++) {
+                    let h = this.data[i] * this.ratioY
+                    let name = this.bars[i][0]
+                    let color = hexToRGBA(this.bars[i][1], this.options.opacity)
+                    drawRect(this.ctx, [x, y - h, bw, h], {color, fill: color})
+                    this.coords.push([x, y - h, bw, h, [name, this.data[i]]])
+                    x += sp + bw
+                }
+            } else {
+                let bw = (this.height / 2) / this.groups
+                let sp = (this.height / 2) / (this.groups + 1)
+                let x = this.padding.left, y = this.padding.top + this.height - sp
+
+                for (let i = 0; i < this.data.length; i++) {
+                    let w = this.data[i] * this.ratioX
+                    let name = this.bars[i][0]
+                    let color = hexToRGBA(this.bars[i][1], this.options.opacity)
+                    drawRect(this.ctx, [x, y - bw, w, bw], {color, fill: color})
+                    this.coords.push([x, y - bw, w, bw, [name, this.data[i]]])
+                    y -= sp + bw
+                }
             }
         }
+
     }
 
-    drawLabelX(){
+    drawLabels(){
+        const labelStyle = this.options.labels.x
 
+        for(let c of this.coords){
+            let [x, y, bw, h, [name]] = c
+
+            y += h
+
+            this.ctx.save()
+
+            let tx, ty
+
+            if (labelStyle.text.angle >= 0) {
+                labelStyle.text.angle = -45
+            } else if (labelStyle.text.angle < -90) {
+                labelStyle.text.angle = -90
+            }
+
+            if (labelStyle.text.angle) {
+                const rx = x + bw/2 - Math.abs(labelStyle.text.angle/2) + labelStyle.shift.x
+                const ry = y - labelStyle.font.size/2 + labelStyle.shift.y - 10
+
+                this.ctx.translate(rx, ry)
+                this.ctx.rotate(labelStyle.text.angle * Math.PI / 180)
+                this.ctx.translate(-rx, -ry)
+
+                tx = x + (labelStyle.text.angle === 90 || labelStyle.text.angle === -90 ? -20 : 20)
+                ty = y + labelStyle.font.size
+                labelStyle.text.align = 'right'
+            } else {
+                tx = x + bw/2 - textWidth(this.ctx, name, labelStyle.font)/2
+                ty = y + labelStyle.font.size
+                labelStyle.text.align = 'left'
+            }
+
+            drawText(
+                this.ctx,
+                `${name}`, [tx, ty, 0],
+                labelStyle.text,
+                labelStyle.font
+            )
+
+            this.ctx.restore()
+        }
     }
 
     drawLegend(){}
@@ -150,16 +221,22 @@ export class BarChart {
     }
 
     drawLabelY(){}
+    drawLabelX(){}
     showTooltip(){}
     removeTooltip(){}
 
     draw(){
-        this.drawLabelX()
-        this.drawLabelY()
+        if (this.dataAxis === 'y') {
+            this.drawLabelY()
+        } else {
+            this.drawLabelX()
+        }
+
         this.drawBars()
+        //this.drawLabels()
         this.drawLegend()
         this.drawTooltip()
     }
 }
 
-Object.assign(BarChart.prototype, AxisY, Tooltip)
+Object.assign(BarChart.prototype, AxisY, AxisX, Tooltip)
