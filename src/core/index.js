@@ -7,8 +7,9 @@ import {
 import {defaultCrossStyle, drawCross} from "../mixins/cross.js";
 import {merge} from "../helpers/merge.js";
 import {normPadding} from "../helpers/padding.js";
-import {defaultFontStyle, defaultTextStyle, TEXT_BOTTOM, TEXT_TOP} from "../defaults/index.js";
+import {defaultTitleStyle, TEXT_BOTTOM, TEXT_TOP} from "../defaults/index.js";
 import {drawText} from "../primitives/text.js";
+import {textWidth} from "../helpers/text.js";
 
 export const defaultChartOptions = {
     dpi: 1,
@@ -23,13 +24,7 @@ export const defaultChartOptions = {
         ...defaultCrossStyle,
     },
     title: {
-        text: "",
-        position: TEXT_TOP,
-        font: {
-            ...defaultFontStyle,
-            size: 24
-        },
-        ...defaultTextStyle,
+        ...defaultTitleStyle,
     },
     background: "#fff"
 }
@@ -50,9 +45,8 @@ export class Chart {
         this.cross = this.options.cross
         this.padding = normPadding(this.options.padding, this.options.dpi)
         this.zero = null
-        this.texts = []
-        this.images = []
         this.title = this.options.title
+        this.hiddenCharts = []
 
         this.proxy = new Proxy({}, {
             set(...args) {
@@ -158,18 +152,50 @@ export class Chart {
 
         if (!text) return
 
-        let textWidth = 0
-        for(let line of textWidth.toString().split("\n")) {
-            const _w = this.ctx.measureText(line).width
-            if (_w > textWidth) textWidth = _w
+        let tw = 0
+        for(let line of text.toString().split("\n")) {
+            const _w = textWidth(this.ctx, line, font)
+            if (_w > tw) tw = _w
         }
 
-        switch (position) {
-            case TEXT_BOTTOM: x = (this.viewWidth - textWidth)/2; y = font.size + this.viewHeight - this.padding.bottom; w = this.viewWidth - this.padding.left - this.padding.right; break;
-            case TEXT_TOP   : x = (this.viewWidth - textWidth)/2; y = font.size; w = this.viewWidth - this.padding.left - this.padding.right; break;
+        w = this.viewWidth - this.padding.left - this.padding.right;
+
+        if (style.align === 'left') {
+            switch (position) {
+                case TEXT_TOP   :
+                    x = font.size
+                    y = font.size
+                    break
+                case TEXT_BOTTOM:
+                    x = 0
+                    y = this.viewHeight - this.padding.bottom + font.size
+                    break
+            }
+        } else if (style.align === 'right') {
+            switch (position) {
+                case TEXT_TOP   :
+                    x = this.viewWidth - font.size
+                    y = font.size
+                    break;
+                case TEXT_BOTTOM:
+                    x = this.viewWidth - font.size
+                    y = this.viewHeight - this.padding.bottom + font.size
+                    break;
+            }
+        } else if (style.align === 'center') {
+            switch (position) {
+                case TEXT_TOP   :
+                    x = (this.viewWidth)/2
+                    y = font.size
+                    break;
+                case TEXT_BOTTOM:
+                    x = (this.viewWidth)/2
+                    y = this.viewHeight - this.padding.bottom + font.size
+                    break;
+            }
         }
 
-        drawText(this.ctx, text, [x, y, w], this.options.title)
+        drawText(this.ctx, text, [x, y, w], style, font)
     }
 
     setTitle(val, style){
@@ -179,6 +205,7 @@ export class Chart {
     }
 
     draw(){
+        const hiddenCharts = this.hiddenCharts
         const o = this.options
 
         this.clearCanvas()
@@ -188,7 +215,10 @@ export class Chart {
         if (o.axis) this.zero = drawAxis.call(this, this.ctx, typeof o.axis === "object" ? o.axis : undefined)
         if (o.cross) drawCross.call(this, this.ctx, typeof o.cross === "object" ? o.cross : undefined)
 
-        this.charts.forEach(chart => chart.draw())
+        this.charts.forEach((chart, i) => {
+            if (hiddenCharts.includes(i)) return
+            chart.draw()
+        })
 
         this.drawTitle()
     }
@@ -206,6 +236,17 @@ export class Chart {
                 this.charts.push(chart)
                 chart.draw()
             }
+        }
+    }
+
+    hideChart(index){
+        if (this.hiddenCharts.includes(index)) {
+            let idx = this.hiddenCharts.indexOf(index);
+            if (idx !== -1) {
+                this.hiddenCharts.splice(idx, 1);
+            }
+        } else {
+            this.hiddenCharts.push(index)
         }
     }
 

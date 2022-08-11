@@ -40,15 +40,16 @@ const chart = new Chart("#chart", {
             count: 20,
         }
     },
-    padding: "50,20,20,20",
+    padding: "50,20,50,20",
     title: {
         text: "Polar Rouse\nGraph System for Metro 5 Demo",
         position: TEXT_TOP,
-        align: "center",
         font: {
             size: 32
         },
-        translate: [0,0],
+        style: {
+            align: "center"
+        }
     }
 })
 
@@ -83,11 +84,11 @@ let line = new PointChart([rouse], {
     }
 })
 
-// chart.addChart(line)
+chart.addChart(line)
 
 const ch = document.querySelector("#chart")
 ch.addEventListener("click", ()=>{
     chart.saveAs()
 })
 
-chart.addText(`Gloriatur bibendum venenatis nisi\nquis dico posidonium`, [900, 100], {...defaultTextStyle, color: "green"})
+// chart.addText(`Gloriatur bibendum venenatis nisi\nquis dico posidonium`, [900, 100], {...defaultTextStyle, color: "green"})

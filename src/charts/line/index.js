@@ -9,7 +9,13 @@ import {drawArea} from "../../primitives/area.js";
 import {drawText} from "../../primitives/text.js";
 import {merge} from "../../helpers/merge.js";
 import {defaultLineChartOptions} from "./default.js";
-import {defaultDotStyle, defaultFontStyle, defaultLineStyle, defaultTextStyle} from "../../defaults/index.js";
+import {
+    defaultDotStyle,
+    defaultFontStyle,
+    defaultLineStyle,
+    defaultTextStyle,
+    TEXT_BOTTOM, TEXT_TOP
+} from "../../defaults/index.js";
 import {defaultLineChartGraph} from "../../defaults/index.js";
 import {
     ORIGIN_BOTTOM_LEFT,
@@ -45,12 +51,14 @@ export class LineChart {
         this.canvas = null
         this.graphs = []
         this.graphsNames = []
+        this.hiddenGraphs = []
         this.coords = []
         this.tooltip = null
         this.minX = null
         this.maxX = null
         this.minY = null
         this.maxY = null
+        this.title = this.options.title
 
         const that = this
 
@@ -78,6 +86,8 @@ export class LineChart {
             }
             that.graphsNames.push(graphName)
         })
+
+        console.log(this.graphs)
 
         this.calcMinMax()
     }
@@ -186,6 +196,17 @@ export class LineChart {
         this.chart.resize()
     }
 
+    hide(index){
+        if (this.hiddenGraphs.includes(index)) {
+            let idx = this.hiddenGraphs.indexOf(index);
+            if (idx !== -1) {
+                this.hiddenGraphs.splice(idx, 1);
+            }
+        } else {
+            this.hiddenGraphs.push(index)
+        }
+    }
+
     #toOrigin(x, y){
         const [zx, zy] = this.zero
         let _x, _y
@@ -218,6 +239,8 @@ export class LineChart {
 
         let index = 0
         for(let data of this.data) {
+            if (this.hiddenGraphs.includes(index)) continue
+
             const graphStyle = this.graphs[index]
             const dotStyle = graphStyle.dot
             const lineStyle = graphStyle.line
@@ -233,13 +256,9 @@ export class LineChart {
                 }
             }
 
-            // console.log(this.minX. this.maxX)
-            //
-            // console.log(include)
-
             if (include.length) {
 
-                if (o.line.fill && o.line.fill !== "transparent") {
+                if (graphStyle.line.fill && graphStyle.line.fill !== "transparent") {
                     let areaCoords = []
                     let lastX = include[include.length - 1][0]
 
@@ -399,10 +418,19 @@ export class LineChart {
 
         const _drawLabelValue = (val, x, y) => {
             if (labelStyle.showValue) {
-                const valWidth = textWidth(this.ctx, ""+val, labelStyle.font)
-                const valHeight = textHeight(this.ctx, ""+val, labelStyle.font)
-                const tx = x - valWidth / 2 + labelStyle.shift.x
-                const ty = y + valHeight + labelStyle.font.size/2 + labelStyle.shift.y
+                const vw = textWidth(this.ctx, ""+val, labelStyle.font)
+                const vh = textHeight(this.ctx, ""+val, labelStyle.font)
+                const tx = x - vw / 2 + labelStyle.shift.x
+                const ty = y + vh + labelStyle.font.size/2 + labelStyle.shift.y
+
+                this.ctx.save()
+
+                if (labelStyle.text.angle) {
+                    const rx = x + vw/2 - Math.abs(labelStyle.text.angle/2) + labelStyle.shift.x, ry = y - labelStyle.font.size/2 + vw + labelStyle.shift.y
+                    this.ctx.translate(rx, ry)
+                    this.ctx.rotate(labelStyle.text.angle * Math.PI / 180)
+                    this.ctx.translate(-rx, -ry)
+                }
 
                 drawText(
                     this.ctx,
@@ -410,6 +438,8 @@ export class LineChart {
                     labelStyle.text,
                     labelStyle.font
                 )
+
+                this.ctx.restore()
             }
         }
 
@@ -444,6 +474,7 @@ export class LineChart {
                 _drawLine(i, x, ly)
                 _drawReferencePoint(x, vy)
                 _drawLabelValue(o.onDrawLabelX(i), x, vy)
+
                 i += labelStep
                 x += labelStep * this.ratioX
             }
@@ -473,10 +504,19 @@ export class LineChart {
 
         const _drawLabelValue = (val, x, y) => {
             if (labelStyle.showValue) {
-                const valWidth = textWidth(this.ctx, val, labelStyle.font)
-                const valHeight = textHeight(this.ctx, val, labelStyle.font)
-                const tx = x - valWidth - labelStyle.font.size/2 + labelStyle.shift.x
+                const vw = textWidth(this.ctx, val, labelStyle.font)
+                const vh = textHeight(this.ctx, val, labelStyle.font)
+                const tx = x - vw - labelStyle.font.size/2 + labelStyle.shift.x
                 const ty = y + labelStyle.shift.y
+
+                this.ctx.save()
+
+                if (labelStyle.text.angle) {
+                    const rx = x + vw/2 - Math.abs(labelStyle.text.angle/2) + labelStyle.shift.x, ry = y - labelStyle.font.size/2 + vw + labelStyle.shift.y
+                    this.ctx.translate(rx, ry)
+                    this.ctx.rotate(labelStyle.text.angle * Math.PI / 180)
+                    this.ctx.translate(-rx, -ry)
+                }
 
                 drawText(
                     this.ctx,
@@ -484,6 +524,8 @@ export class LineChart {
                     labelStyle.text,
                     labelStyle.font
                 )
+
+                this.ctx.restore()
             }
         }
 

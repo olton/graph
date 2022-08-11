@@ -1,45 +1,26 @@
 import {
-    defaultDotStyle,
-    defaultLineStyle,
     defaultFontStyle,
-    defaultValueStyle,
-    defaultTooltip,
     defaultLabelStyleX,
-    defaultLabelStyleY,
-    defaultLegendStyle,
-    defaultBoundaries,
-    defaultTextStyle,
-    TOP_LEFT
+    defaultLabelStyleY, defaultLegendStyle,
+    defaultTooltip,
+    defaultValueStyle
 } from "../../defaults/index.js";
 
-export const defaultLineChartOptions = {
+export const defaultBarChartOptions = {
     graphs: [],
-    boundaries: {
-        ...defaultBoundaries
-    },
-    lines: true,
-    dots: true,
-    origin: true,
-    maxGraphSize: 0,
-    dot: {
-        ...defaultDotStyle
-    },
-    line: {
-        ...defaultLineStyle,
-        fill: "transparent"
-    },
     font: {
         ...defaultFontStyle
     },
     title: {
-        style: {
-            ...defaultTextStyle
-        },
+        align: 'left',
+        baseLine: 'middle',
+        color: '#000',
+        stroke: '#000',
         font: {
             ...defaultFontStyle
         },
-        position: TOP_LEFT,
-        text: ""
+        angle: 0,
+        translate: [0, 0]
     },
     labels: {
         x: {
@@ -59,7 +40,7 @@ export const defaultLineChartOptions = {
         ...defaultLegendStyle
     },
     onTooltipShow: (x, y) => `(${x}, ${y})`,
-    onDrawValue: (x, y) => `(${x}, ${y})`,
+    onDrawValue: (v) => `${v}`,
     onDrawLabelX: (v) => `${v}`,
     onDrawLabelY: (v) => `${v}`,
     onDrawLegend: (v) => `${v}`,

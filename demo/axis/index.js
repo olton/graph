@@ -5,13 +5,16 @@ import {random} from "../../src/helpers/rand.js";
 globalThis.charts = [];
 
 (() => {
-    const graph1 = []
-
-    for (let i = 0; i < 10; i++) {
-        graph1.push([random(-100, 100), random(-100, 100)])
+    const rouse = []
+    const a = 2
+    for(let t = 0; t <= Math.PI * 2; t+=.01) {
+        const r = Math.sin(a * t)
+        const x = r * Math.cos(t)
+        const y = r * Math.sin(t)
+        rouse.push([x, y])
     }
 
-    const originsArray = ["center-center"/*, "top-left", "top-center", "top-right", "bottom-left", "bottom-center", "bottom-right", "left-center", "right-center"*/]
+    const originsArray = ["center-center", "top-left", "top-center", "top-right", "bottom-left", "bottom-center", "bottom-right", "left-center", "right-center"]
     const graphColor = {
         size: 1,
         color: "#ff0000"
@@ -60,15 +63,15 @@ globalThis.charts = [];
         globalThis.charts.push(chartCanvas)
 
         // continue
-        chartCanvas.addChart(new PointChart([graph1], {
+        chartCanvas.addChart(new PointChart([rouse], {
             boundaries: {
                 min: {
-                    x: -100,
-                    y: -100
+                    x: -1,
+                    y: -1
                 },
                 max: {
-                    x: 100,
-                    y: 100
+                    x: 1,
+                    y: 1
                 }
             },
             lines: false,

@@ -58,7 +58,8 @@ export const defaultTextStyle = {
     color: "#000",
     angle: 0,
     align: TEXT_ALIGN_LEFT,
-    translate: [0,0]
+    translate: [0,0],
+    baseline: "middle"
 }
 
 export const defaultValueStyle = {
@@ -166,4 +167,16 @@ export const defaultLegendStyle = {
         x: 0,
         y: 0
     }
+}
+
+export const defaultTitleStyle = {
+    text: "",
+    position: TOP_LEFT,
+    font: {
+        ...defaultFontStyle,
+        size: 24
+    },
+    style: {
+        ...defaultTextStyle,
+    },
 }

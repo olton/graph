@@ -1,7 +1,7 @@
 import {Chart, TextChart} from "../../src/index.js"
 import {LineChart} from "../../src/index.js"
 import {ORIGIN_BOTTOM_LEFT, ORIGIN_BOTTOM_RIGHT, ORIGIN_TOP_LEFT, ORIGIN_TOP_RIGHT} from "../../src/mixins/axis.js";
-import {defaultTooltip} from "../../src/defaults/index.js";
+import {defaultTooltip, TEXT_TOP, TOP_CENTER} from "../../src/defaults/index.js";
 import {datetime} from "../../node_modules/@olton/datetime/src/index.js";
 import {random} from "../../src/helpers/rand.js";
 
@@ -25,7 +25,17 @@ const chart = new Chart("#cpu", {
             count: 20,
         }
     },
-    padding: `50, 50, 50, 50`
+    padding: `50, 50, 100, 50`,
+    title: {
+        text: "Line Chart\nGraph System for Metro 5 Demo",
+        position: TEXT_TOP,
+        font: {
+            size: 32
+        },
+        style: {
+            align: "center"
+        }
+    }
 })
 
 const inter = 26
@@ -39,6 +49,21 @@ for (let i = 0; i < inter; i++) {
 // console.log(graph1)
 
 let line = new LineChart([graph1], {
+    graphs: [
+        {
+            line: {
+                type: "line",
+                color: "#3de3ff",
+                fill: "rgba(51,178,255,0.2)"
+            },
+            dot: {
+                type: "circle",
+                fill: "#3de3ff",
+                color: "rgba(51,178,255,0.2)",
+                size: 4
+            },
+        }
+    ],
     boundaries: {
         min: {
             y: 0
@@ -49,11 +74,6 @@ let line = new LineChart([graph1], {
     },
     lines: true,
     origin: true,
-    line: {
-        type: "line",
-        color: "#3de3ff",
-        fill: "rgba(51,178,255,0.2)"
-    },
     values: {
         show: true,
         translate: [0, 0],
@@ -69,7 +89,7 @@ let line = new LineChart([graph1], {
     labels: {
         x: {
             text: {
-                angle: -1,
+                angle: -45,
             },
             step: 10,
             count: 5,
@@ -95,6 +115,9 @@ let line = new LineChart([graph1], {
         font: {
             size: 24
         }
+    },
+    title: {
+        text: "Line Chart"
     },
     onDrawValue: (x, y) => {
         const _x = (+x).toFixed(0)
