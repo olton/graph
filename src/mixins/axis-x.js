@@ -11,7 +11,7 @@ export const AxisX = {
 
         if (labelStyle.step === 'auto') {
             if (labelStyle.count) {
-                labelStep = Math.round((this.maxX - this.minX) / labelStyle.count)
+                labelStep = (this.maxX - this.minX) / labelStyle.count
             }
         } else {
             labelStep = (this.maxX - this.minX) / labelStyle.step
@@ -38,7 +38,7 @@ export const AxisX = {
                     const rx = x + vw/2 - Math.abs(labelStyle.text.angle/2) + labelStyle.shift.x, ry = y - labelStyle.font.size/2 + vw + labelStyle.shift.y
                     this.ctx.translate(rx, ry)
                     this.ctx.rotate(labelStyle.text.angle * Math.PI / 180)
-                    this.ctx.translate(-rx, -ry)
+                    this.ctx.translate(-rx + 100, -ry)
                 }
 
                 drawText(
@@ -72,7 +72,8 @@ export const AxisX = {
                 _drawReferencePoint(x, vy)
                 _drawLabelValue(o.onDrawLabelX(labelValue), x, vy)
                 labelValue += labelStep
-                x = this.padding.left + (labelValue - this.minX) * this.ratioX
+                x = (this.padding.left) + (labelValue - this.minX) * this.ratioX
+                console.log(x, this.width + this.padding.left)
             }
         } else {
             let x = this.padding.left, vy = this.padding.top + this.height, ly = this.padding.top

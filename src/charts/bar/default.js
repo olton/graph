@@ -38,7 +38,6 @@ export const defaultBarChartOptions = {
         min: null,
         max: null
     },
-    dataAxis: "y",
     onTooltipShow: (x, y) => `${x}: ${y}`,
     onDrawValue: (v) => `${v}`,
     onDrawLabelX: (v) => `${v}`,

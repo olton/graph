@@ -100,40 +100,17 @@ export class BarChart {
 
         this.coords = []
 
-        if (this.grouped) {
+        let bw = (this.width / 2) / this.groups
+        let sp = (this.width / 2) / (this.groups + 1)
+        let x = sp + this.padding.left, y = this.padding.top + this.height
 
-            for(let i = 0; i < this.data.length; i++) {
-
-            }
-
-        } else {
-            if (this.dataAxis === 'y') {
-                let bw = (this.width / 2) / this.groups
-                let sp = (this.width / 2) / (this.groups + 1)
-                let x = sp + this.padding.left, y = this.padding.top + this.height
-
-                for (let i = 0; i < this.data.length; i++) {
-                    let h = this.data[i] * this.ratioY
-                    let name = this.bars[i][0]
-                    let color = hexToRGBA(this.bars[i][1], this.options.opacity)
-                    drawRect(this.ctx, [x, y - h, bw, h], {color, fill: color})
-                    this.coords.push([x, y - h, bw, h, [name, this.data[i]]])
-                    x += sp + bw
-                }
-            } else {
-                let bw = (this.height / 2) / this.groups
-                let sp = (this.height / 2) / (this.groups + 1)
-                let x = this.padding.left, y = this.padding.top + this.height - sp
-
-                for (let i = 0; i < this.data.length; i++) {
-                    let w = this.data[i] * this.ratioX
-                    let name = this.bars[i][0]
-                    let color = hexToRGBA(this.bars[i][1], this.options.opacity)
-                    drawRect(this.ctx, [x, y - bw, w, bw], {color, fill: color})
-                    this.coords.push([x, y - bw, w, bw, [name, this.data[i]]])
-                    y -= sp + bw
-                }
-            }
+        for (let i = 0; i < this.data.length; i++) {
+            let h = this.data[i] * this.ratioY
+            let name = this.bars[i][0]
+            let color = hexToRGBA(this.bars[i][1], this.options.opacity)
+            drawRect(this.ctx, [x, y - h, bw, h], {color, fill: color})
+            this.coords.push([x, y - h, bw, h, [name, this.data[i]]])
+            x += sp + bw
         }
 
     }
@@ -233,9 +210,9 @@ export class BarChart {
         }
 
         this.drawBars()
-        //this.drawLabels()
         this.drawLegend()
         this.drawTooltip()
+        this.drawLabels()
     }
 }
 

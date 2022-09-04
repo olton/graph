@@ -23,7 +23,7 @@ const chart = new Chart("#chart", {
             count: 20,
         }
     },
-    padding: `50, 100, 50, 50`,
+    padding: `150, 50, 150, 50`,
     title: {
         text: "Bar Chart\nGraph System for Metro 5 Demo",
         position: TEXT_TOP,
@@ -49,7 +49,7 @@ const bar = new BarChart(data1, {
     boundaries: {
         max: 10
     },
-    dataAxis: 'x'
+    dataAxis: 'y'
 })
 
 chart.addChart(bar)
