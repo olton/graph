@@ -17,20 +17,6 @@ import {AxisX} from "../../mixins/axis-x.js";
 *     ...
 *     [value, name],
 * ]
-* or
-* [
-*     [
-*         [value, name],
-*         ...
-*         [value, name],
-*     ],
-*     ...
-*     [
-*         [value, name],
-*         ...
-*         [value, name],
-*     ],
-* ]
 * */
 
 export class BarChart {
@@ -41,7 +27,6 @@ export class BarChart {
         this.minX = 0
         this.maxY = 0
         this.minY = 0
-        this.grouped = data && Array.isArray(data[0])
         this.groups = (data && data.length) || 0
         this.bars = []
         this.coords = []
@@ -67,7 +52,16 @@ export class BarChart {
         this.fullHeight = chart.viewHeight
         this.width = chart.viewWidth - (chart.padding.left + chart.padding.right)
         this.height = chart.viewHeight - (chart.padding.top + chart.padding.bottom)
+        this.top = chart.padding.top
+        this.left = chart.padding.left
         this.proxy = chart.proxy
+
+        if (this.options.rect !== 'default') {
+            this.top = this.options.rect.top
+            this.left = this.options.rect.left
+            this.width = this.options.rect.width
+            this.height = this.options.rect.height
+        }
 
         this.calcRatio()
     }
@@ -102,7 +96,7 @@ export class BarChart {
 
         let bw = (this.width / 2) / this.groups
         let sp = (this.width / 2) / (this.groups + 1)
-        let x = sp + this.padding.left, y = this.padding.top + this.height
+        let x = sp + this.left, y = this.top + this.height
 
         for (let i = 0; i < this.data.length; i++) {
             let h = this.data[i] * this.ratioY
@@ -203,12 +197,7 @@ export class BarChart {
     removeTooltip(){}
 
     draw(){
-        if (this.dataAxis === 'y') {
-            this.drawLabelY()
-        } else {
-            this.drawLabelX()
-        }
-
+        this.drawLabelY()
         this.drawBars()
         this.drawLegend()
         this.drawTooltip()

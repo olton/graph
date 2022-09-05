@@ -8,7 +8,7 @@ const chart = new Chart("#chart", {
     css: {
         border: "1px solid #ddd",
         width: "700px",
-        height: "700px"
+        height: "400px"
     },
     axis: {
         origin: ORIGIN_BOTTOM_LEFT,
@@ -23,7 +23,7 @@ const chart = new Chart("#chart", {
             count: 20,
         }
     },
-    padding: `150, 50, 150, 50`,
+    padding: `50, 50, 70, 50`,
     title: {
         text: "Bar Chart\nGraph System for Metro 5 Demo",
         position: TEXT_TOP,
@@ -42,14 +42,13 @@ const bar = new BarChart(data1, {
     graphs: {
         "Austin": "#0d5",
         "Denver": "#fb0",
-        "Washingtom": "#ad2a14",
+        "Washington": "#ad2a14",
         "Kyiv": "#07f",
         "Moscow": "#f08",
     },
     boundaries: {
         max: 10
-    },
-    dataAxis: 'y'
+    }
 })
 
 chart.addChart(bar)
